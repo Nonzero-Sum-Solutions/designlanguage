@@ -5,6 +5,7 @@ import (
 
 	"github.com/mattmunz/designlanguage/model"
 	"github.com/mattmunz/designlanguage/parser"
+	"github.com/mattmunz/designlanguage/test/unit"
 	"github.com/stretchr/testify/require"
 )
 
@@ -14,8 +15,14 @@ func TestParseMethod1(t *testing.T) {
 	requireParsedMethodEqual(t, "Foo ()", method)
 }
 
+func TestParseEnum(t *testing.T) {
+	enum1, err := model.NewEnum("Color", "Red", "Orangle", "Yellow", "Green")
+	require.NoError(t, err)
+	requireParsedEnumEqual(t, "Color = {Red, Orangle, Yellow, Green}", enum1)
+}
+
 func TestParseMethod2(t *testing.T) {
-	params := []model.Param{model.NewParam("Bar", model.NewType("Baz", false))}
+	params := []model.Param{model.NewParam("Bar", unit.NewType(t, "Baz"))}
 	method, err := model.NewMethod("Foo", "", params, []model.Param{})
 	require.NoError(t, err)
 	requireParsedMethodEqual(t, "Foo (Bar Baz)", method)
@@ -28,16 +35,16 @@ func TestParseMethod3(t *testing.T) {
 }
 
 func TestParseMethod4(t *testing.T) {
-	params := []model.Param{model.NewParam("Bar", model.NewType("Baz", false))}
-	returnVals := []model.Param{model.NewParam("This", model.NewType("That", false))}
+	params := []model.Param{model.NewParam("Bar", unit.NewType(t, "Baz"))}
+	returnVals := []model.Param{model.NewParam("This", unit.NewType(t, "That"))}
 	method, err := model.NewMethod("Foo", "", params, returnVals)
 	require.NoError(t, err)
 	requireParsedMethodEqual(t, "Foo (Bar Baz) -> (This That)", method)
 }
 
 func TestParseMethod5(t *testing.T) {
-	params := []model.Param{model.NewParam("Bar", model.NewType("Baz", false))}
-	returnVals := []model.Param{model.NewParam("This", model.NewType("That", false))}
+	params := []model.Param{model.NewParam("Bar", unit.NewType(t, "Baz"))}
+	returnVals := []model.Param{model.NewParam("This", unit.NewType(t, "That"))}
 	method, err := model.NewMethod("Foo", "A comment!", params, returnVals)
 	require.NoError(t, err)
 	requireParsedMethodEqual(t, "Foo (Bar Baz) -> (This That) -- A comment!", method)
@@ -45,10 +52,10 @@ func TestParseMethod5(t *testing.T) {
 
 func TestParseMethod6(t *testing.T) {
 	params := []model.Param{
-		model.NewParam("Bar", model.NewType("Baz", false)),
-		model.NewParam("This", model.NewType("That", false)),
+		model.NewParam("Bar", unit.NewType(t, "Baz")),
+		model.NewParam("This", unit.NewType(t, "That")),
 	}
-	returnVals := []model.Param{model.NewParam("Which", model.NewType("What", false))}
+	returnVals := []model.Param{model.NewParam("Which", unit.NewType(t, "What"))}
 	method, err := model.NewMethod("Foo", "", params, returnVals)
 	require.NoError(t, err)
 	requireParsedMethodEqual(t, "Foo (Bar Baz, This That) -> (Which What)", method)
@@ -61,6 +68,14 @@ func requireParsedMethodEqual(t *testing.T, text string, expectedMethod model.Me
 	require.Equal(t, expectedMethod.Name(), method.Name())
 	require.Equal(t, expectedMethod.Params(), method.Params())
 	require.Equal(t, expectedMethod.ReturnVals(), method.ReturnVals())
+}
+
+func requireParsedEnumEqual(t *testing.T, text string, expected model.Enum) {
+	enum1, err := parser.ParseEnum(text)
+	require.NoError(t, err)
+
+	require.Equal(t, expected.Name(), enum1.Name())
+	require.Equal(t, expected.Values(), enum1.Values())
 }
 
 func TestIsComponentLine1(t *testing.T) {

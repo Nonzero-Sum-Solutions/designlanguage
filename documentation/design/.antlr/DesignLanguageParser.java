@@ -1,4 +1,4 @@
-// Generated from /Users/mattmunz/Google Drive/Projects/Programming/gowork/src/github.com/mattmunz/designlanguage/documentation/design/DesignLanguage.g4 by ANTLR 4.13.1
+// Generated from /Users/mattmunz/Google Drive/Projects/Programming/gowork/src/github.com/mattmunz/designlanguage/documentation/design/DesignLanguage.g4 by ANTLR 4.9.2
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class DesignLanguageParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.9.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -96,7 +96,6 @@ public class DesignLanguageParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class DesignContext extends ParserRuleContext {
 		public TerminalNode EOF() { return getToken(DesignLanguageParser.EOF, 0); }
 		public PreambleContext preamble() {
@@ -166,7 +165,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class PreambleContext extends ParserRuleContext {
 		public List<TerminalNode> NEWLINE() { return getTokens(DesignLanguageParser.NEWLINE); }
 		public TerminalNode NEWLINE(int i) {
@@ -240,7 +238,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class AuthorContext extends ParserRuleContext {
 		public TerminalNode AUTHOR_START() { return getToken(DesignLanguageParser.AUTHOR_START, 0); }
 		public TerminalNode AUTHOR_NAME() { return getToken(DesignLanguageParser.AUTHOR_NAME, 0); }
@@ -273,7 +270,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class ComponentContext extends ParserRuleContext {
 		public SimpleComponentContext simpleComponent() {
 			return getRuleContext(SimpleComponentContext.class,0);
@@ -345,7 +341,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class SimpleComponentContext extends ParserRuleContext {
 		public TerminalNode NAME() { return getToken(DesignLanguageParser.NAME, 0); }
 		public List<TerminalNode> NEWLINE() { return getTokens(DesignLanguageParser.NEWLINE); }
@@ -395,7 +390,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class FieldContext extends ParserRuleContext {
 		public TerminalNode FIELD_START() { return getToken(DesignLanguageParser.FIELD_START, 0); }
 		public AttributeContext attribute() {
@@ -447,7 +441,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class AttributeContext extends ParserRuleContext {
 		public ParamContext param() {
 			return getRuleContext(ParamContext.class,0);
@@ -493,7 +486,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class MethodContext extends ParserRuleContext {
 		public TerminalNode NAME() { return getToken(DesignLanguageParser.NAME, 0); }
 		public List<ParamsContext> params() {
@@ -564,7 +556,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class ParamContext extends ParserRuleContext {
 		public TerminalNode NAME() { return getToken(DesignLanguageParser.NAME, 0); }
 		public TypeContext type() {
@@ -601,7 +592,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class ParamsContext extends ParserRuleContext {
 		public List<ParamContext> param() {
 			return getRuleContexts(ParamContext.class);
@@ -680,7 +670,6 @@ public class DesignLanguageParser extends Parser {
 		return _localctx;
 	}
 
-	@SuppressWarnings("CheckReturnValue")
 	public static class TypeContext extends ParserRuleContext {
 		public TerminalNode NAME() { return getToken(DesignLanguageParser.NAME, 0); }
 		public TerminalNode ARRAY() { return getToken(DesignLanguageParser.ARRAY, 0); }
@@ -723,70 +712,34 @@ public class DesignLanguageParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0010s\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
-		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
-		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
-		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0001\u0000\u0003\u0000\u0018"+
-		"\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0005\u0000\u001d\b\u0000"+
-		"\n\u0000\f\u0000 \t\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0001\u0001"+
-		"\u0001\u0001\u0001\u0001\u0003\u0001(\b\u0001\u0001\u0001\u0001\u0001"+
-		"\u0003\u0001,\b\u0001\u0001\u0001\u0001\u0001\u0001\u0002\u0001\u0002"+
-		"\u0001\u0002\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003"+
-		"\u0004\u00038\b\u0003\u000b\u0003\f\u00039\u0003\u0003<\b\u0003\u0001"+
-		"\u0004\u0001\u0004\u0001\u0004\u0001\u0004\u0003\u0004B\b\u0004\u0001"+
-		"\u0005\u0001\u0005\u0001\u0005\u0003\u0005G\b\u0005\u0001\u0006\u0001"+
-		"\u0006\u0001\u0006\u0003\u0006L\b\u0006\u0001\u0007\u0001\u0007\u0001"+
-		"\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0001\u0007\u0003\u0007U\b"+
-		"\u0007\u0001\u0007\u0001\u0007\u0003\u0007Y\b\u0007\u0001\b\u0001\b\u0001"+
-		"\b\u0001\b\u0001\t\u0001\t\u0001\t\u0003\tb\b\t\u0001\t\u0001\t\u0005"+
-		"\tf\b\t\n\t\f\ti\t\t\u0001\t\u0003\tl\b\t\u0001\n\u0003\no\b\n\u0001\n"+
-		"\u0001\n\u0001\n\u0000\u0000\u000b\u0000\u0002\u0004\u0006\b\n\f\u000e"+
-		"\u0010\u0012\u0014\u0000\u0000v\u0000\u0017\u0001\u0000\u0000\u0000\u0002"+
-		"+\u0001\u0000\u0000\u0000\u0004/\u0001\u0000\u0000\u0000\u0006;\u0001"+
-		"\u0000\u0000\u0000\b=\u0001\u0000\u0000\u0000\nC\u0001\u0000\u0000\u0000"+
-		"\fH\u0001\u0000\u0000\u0000\u000eM\u0001\u0000\u0000\u0000\u0010Z\u0001"+
-		"\u0000\u0000\u0000\u0012k\u0001\u0000\u0000\u0000\u0014n\u0001\u0000\u0000"+
-		"\u0000\u0016\u0018\u0003\u0002\u0001\u0000\u0017\u0016\u0001\u0000\u0000"+
-		"\u0000\u0017\u0018\u0001\u0000\u0000\u0000\u0018\u001e\u0001\u0000\u0000"+
-		"\u0000\u0019\u001a\u0003\u0006\u0003\u0000\u001a\u001b\u0005\u000f\u0000"+
-		"\u0000\u001b\u001d\u0001\u0000\u0000\u0000\u001c\u0019\u0001\u0000\u0000"+
-		"\u0000\u001d \u0001\u0000\u0000\u0000\u001e\u001c\u0001\u0000\u0000\u0000"+
-		"\u001e\u001f\u0001\u0000\u0000\u0000\u001f!\u0001\u0000\u0000\u0000 \u001e"+
-		"\u0001\u0000\u0000\u0000!\"\u0005\u0000\u0000\u0001\"\u0001\u0001\u0000"+
-		"\u0000\u0000#$\u0003\u0004\u0002\u0000$\'\u0005\u000f\u0000\u0000%&\u0005"+
-		"\u000b\u0000\u0000&(\u0005\u000f\u0000\u0000\'%\u0001\u0000\u0000\u0000"+
-		"\'(\u0001\u0000\u0000\u0000(,\u0001\u0000\u0000\u0000)*\u0005\u000b\u0000"+
-		"\u0000*,\u0005\u000f\u0000\u0000+#\u0001\u0000\u0000\u0000+)\u0001\u0000"+
-		"\u0000\u0000,-\u0001\u0000\u0000\u0000-.\u0005\u000f\u0000\u0000.\u0003"+
-		"\u0001\u0000\u0000\u0000/0\u0005\n\u0000\u000001\u0005\t\u0000\u00001"+
-		"\u0005\u0001\u0000\u0000\u00002<\u0003\b\u0004\u000037\u0003\b\u0004\u0000"+
-		"45\u0003\n\u0005\u000056\u0005\u000f\u0000\u000068\u0001\u0000\u0000\u0000"+
-		"74\u0001\u0000\u0000\u000089\u0001\u0000\u0000\u000097\u0001\u0000\u0000"+
-		"\u00009:\u0001\u0000\u0000\u0000:<\u0001\u0000\u0000\u0000;2\u0001\u0000"+
-		"\u0000\u0000;3\u0001\u0000\u0000\u0000<\u0007\u0001\u0000\u0000\u0000"+
-		"=>\u0005\u000e\u0000\u0000>A\u0005\u000f\u0000\u0000?@\u0005\u000b\u0000"+
-		"\u0000@B\u0005\u000f\u0000\u0000A?\u0001\u0000\u0000\u0000AB\u0001\u0000"+
-		"\u0000\u0000B\t\u0001\u0000\u0000\u0000CF\u0005\b\u0000\u0000DG\u0003"+
-		"\f\u0006\u0000EG\u0003\u000e\u0007\u0000FD\u0001\u0000\u0000\u0000FE\u0001"+
-		"\u0000\u0000\u0000G\u000b\u0001\u0000\u0000\u0000HK\u0003\u0010\b\u0000"+
-		"IJ\u0005\u0001\u0000\u0000JL\u0005\u000b\u0000\u0000KI\u0001\u0000\u0000"+
-		"\u0000KL\u0001\u0000\u0000\u0000L\r\u0001\u0000\u0000\u0000MN\u0005\u000e"+
-		"\u0000\u0000NO\u0005\u0001\u0000\u0000OP\u0003\u0012\t\u0000PT\u0005\u0001"+
-		"\u0000\u0000QR\u0005\u0006\u0000\u0000RS\u0005\u0001\u0000\u0000SU\u0003"+
-		"\u0012\t\u0000TQ\u0001\u0000\u0000\u0000TU\u0001\u0000\u0000\u0000UX\u0001"+
-		"\u0000\u0000\u0000VW\u0005\u0001\u0000\u0000WY\u0005\u000b\u0000\u0000"+
-		"XV\u0001\u0000\u0000\u0000XY\u0001\u0000\u0000\u0000Y\u000f\u0001\u0000"+
-		"\u0000\u0000Z[\u0005\u000e\u0000\u0000[\\\u0005\u0001\u0000\u0000\\]\u0003"+
-		"\u0014\n\u0000]\u0011\u0001\u0000\u0000\u0000^l\u0005\u0002\u0000\u0000"+
-		"_a\u0005\u0003\u0000\u0000`b\u0003\u0010\b\u0000a`\u0001\u0000\u0000\u0000"+
-		"ab\u0001\u0000\u0000\u0000bg\u0001\u0000\u0000\u0000cd\u0005\u0001\u0000"+
-		"\u0000df\u0003\u0010\b\u0000ec\u0001\u0000\u0000\u0000fi\u0001\u0000\u0000"+
-		"\u0000ge\u0001\u0000\u0000\u0000gh\u0001\u0000\u0000\u0000hj\u0001\u0000"+
-		"\u0000\u0000ig\u0001\u0000\u0000\u0000jl\u0005\u0004\u0000\u0000k^\u0001"+
-		"\u0000\u0000\u0000k_\u0001\u0000\u0000\u0000l\u0013\u0001\u0000\u0000"+
-		"\u0000mo\u0005\u0005\u0000\u0000nm\u0001\u0000\u0000\u0000no\u0001\u0000"+
-		"\u0000\u0000op\u0001\u0000\u0000\u0000pq\u0005\u000e\u0000\u0000q\u0015"+
-		"\u0001\u0000\u0000\u0000\u000f\u0017\u001e\'+9;AFKTXagkn";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22u\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
+		"\f\t\f\3\2\5\2\32\n\2\3\2\3\2\3\2\7\2\37\n\2\f\2\16\2\"\13\2\3\2\3\2\3"+
+		"\3\3\3\3\3\3\3\5\3*\n\3\3\3\3\3\5\3.\n\3\3\3\3\3\3\4\3\4\3\4\3\5\3\5\3"+
+		"\5\3\5\3\5\6\5:\n\5\r\5\16\5;\5\5>\n\5\3\6\3\6\3\6\3\6\5\6D\n\6\3\7\3"+
+		"\7\3\7\5\7I\n\7\3\b\3\b\3\b\5\bN\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tW"+
+		"\n\t\3\t\3\t\5\t[\n\t\3\n\3\n\3\n\3\n\3\13\3\13\3\13\5\13d\n\13\3\13\3"+
+		"\13\7\13h\n\13\f\13\16\13k\13\13\3\13\5\13n\n\13\3\f\5\fq\n\f\3\f\3\f"+
+		"\3\f\2\2\r\2\4\6\b\n\f\16\20\22\24\26\2\2\2x\2\31\3\2\2\2\4-\3\2\2\2\6"+
+		"\61\3\2\2\2\b=\3\2\2\2\n?\3\2\2\2\fE\3\2\2\2\16J\3\2\2\2\20O\3\2\2\2\22"+
+		"\\\3\2\2\2\24m\3\2\2\2\26p\3\2\2\2\30\32\5\4\3\2\31\30\3\2\2\2\31\32\3"+
+		"\2\2\2\32 \3\2\2\2\33\34\5\b\5\2\34\35\7\21\2\2\35\37\3\2\2\2\36\33\3"+
+		"\2\2\2\37\"\3\2\2\2 \36\3\2\2\2 !\3\2\2\2!#\3\2\2\2\" \3\2\2\2#$\7\2\2"+
+		"\3$\3\3\2\2\2%&\5\6\4\2&)\7\21\2\2\'(\7\r\2\2(*\7\21\2\2)\'\3\2\2\2)*"+
+		"\3\2\2\2*.\3\2\2\2+,\7\r\2\2,.\7\21\2\2-%\3\2\2\2-+\3\2\2\2./\3\2\2\2"+
+		"/\60\7\21\2\2\60\5\3\2\2\2\61\62\7\f\2\2\62\63\7\13\2\2\63\7\3\2\2\2\64"+
+		">\5\n\6\2\659\5\n\6\2\66\67\5\f\7\2\678\7\21\2\28:\3\2\2\29\66\3\2\2\2"+
+		":;\3\2\2\2;9\3\2\2\2;<\3\2\2\2<>\3\2\2\2=\64\3\2\2\2=\65\3\2\2\2>\t\3"+
+		"\2\2\2?@\7\20\2\2@C\7\21\2\2AB\7\r\2\2BD\7\21\2\2CA\3\2\2\2CD\3\2\2\2"+
+		"D\13\3\2\2\2EH\7\n\2\2FI\5\16\b\2GI\5\20\t\2HF\3\2\2\2HG\3\2\2\2I\r\3"+
+		"\2\2\2JM\5\22\n\2KL\7\3\2\2LN\7\r\2\2MK\3\2\2\2MN\3\2\2\2N\17\3\2\2\2"+
+		"OP\7\20\2\2PQ\7\3\2\2QR\5\24\13\2RV\7\3\2\2ST\7\b\2\2TU\7\3\2\2UW\5\24"+
+		"\13\2VS\3\2\2\2VW\3\2\2\2WZ\3\2\2\2XY\7\3\2\2Y[\7\r\2\2ZX\3\2\2\2Z[\3"+
+		"\2\2\2[\21\3\2\2\2\\]\7\20\2\2]^\7\3\2\2^_\5\26\f\2_\23\3\2\2\2`n\7\4"+
+		"\2\2ac\7\5\2\2bd\5\22\n\2cb\3\2\2\2cd\3\2\2\2di\3\2\2\2ef\7\3\2\2fh\5"+
+		"\22\n\2ge\3\2\2\2hk\3\2\2\2ig\3\2\2\2ij\3\2\2\2jl\3\2\2\2ki\3\2\2\2ln"+
+		"\7\6\2\2m`\3\2\2\2ma\3\2\2\2n\25\3\2\2\2oq\7\7\2\2po\3\2\2\2pq\3\2\2\2"+
+		"qr\3\2\2\2rs\7\20\2\2s\27\3\2\2\2\21\31 )-;=CHMVZcimp";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

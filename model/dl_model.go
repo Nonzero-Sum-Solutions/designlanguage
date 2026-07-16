@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -11,6 +12,7 @@ type Design interface {
 	Author() string
 	Namespace() string
 	AllComponents() []Component
+	Enums() []Enum
 	BaseComponents() []Component
 	Entities() []Entity
 	Objects() []Object
@@ -67,27 +69,23 @@ type Type interface {
 type Component interface {
 	Named
 	Commented
-	Supertype() string
+	Supertype() Type
 }
 
 type component struct {
 	Named
 	Commented
-	supertype string
+	supertype Type
 }
 
 // TODO Validate all strings more stringently for validity
-func NewComponent(name, comment, supertype string) (Component, error) {
+func NewComponent(name, comment string, supertype Type) (Component, error) {
 	if strings.Contains(name, " ") {
 		return nil, fmt.Errorf("Invalid name: [%s]", name)
 	}
 
 	if strings.HasSuffix(comment, " ") {
 		return nil, fmt.Errorf("Invalid comment: [%s]", comment)
-	}
-
-	if strings.Contains(supertype, " ") {
-		return nil, fmt.Errorf("Invalid supertype: [%s]", supertype)
 	}
 
 	return &component{
@@ -97,7 +95,7 @@ func NewComponent(name, comment, supertype string) (Component, error) {
 	}, nil
 }
 
-func (c *component) Supertype() string {
+func (c *component) Supertype() Type {
 	return c.supertype
 }
 
@@ -111,6 +109,7 @@ type Attribute interface {
 // It's a function from some entity to some entity.
 type Method interface {
 	Named
+	Commented
 	Params() []Param
 	ReturnVals() []Param
 }
@@ -136,7 +135,32 @@ type Representation interface {
 	Decode(encoded string) (Entity, error)
 }
 
-func NewObject(name, comment, superType string, attributes []Attribute, methods []Method) (Object, error) {
+type Enum interface {
+	Component
+	Values() []string
+}
+
+func NewEnum(name string, values ...string) (Enum, error) {
+	if len(values) < 1 {
+		return nil, errors.New("Not enough values for enum")
+	}
+	c, err := NewComponent(name, "", nil)
+	if err != nil {
+		return nil, err
+	}
+	return &enumExpr{c, values}, nil
+}
+
+type enumExpr struct {
+	Component
+	values []string
+}
+
+func (e *enumExpr) Values() []string {
+	return e.values
+}
+
+func NewObject(name, comment string, superType Type, attributes []Attribute, methods []Method) (Object, error) {
 	e, err := NewEntity(name, comment, superType, attributes)
 	if err != nil {
 		return nil, err
@@ -154,7 +178,7 @@ func (o *object) Methods() []Method {
 	return o.methods
 }
 
-func NewEntity(name, comment, supertype string, attributes []Attribute) (Entity, error) {
+func NewEntity(name, comment string, supertype Type, attributes []Attribute) (Entity, error) {
 	c, err := NewComponent(name, comment, supertype)
 	if err != nil {
 		return nil, err
@@ -189,6 +213,7 @@ type design struct {
 	author         string
 	namespace      string
 	allComponents  []Component
+	enums          []Enum
 	baseComponents []Component
 	entities       []Entity
 	objects        []Object
@@ -204,6 +229,10 @@ func (d *design) Namespace() string {
 
 func (d *design) AllComponents() []Component {
 	return d.allComponents
+}
+
+func (d *design) Enums() []Enum {
+	return d.enums
 }
 
 func (d *design) BaseComponents() []Component {
@@ -223,6 +252,7 @@ func NewDesign(author, comment, namespace string, allComponents []Component) Des
 		author,
 		namespace,
 		allComponents,
+		GetEnums(allComponents),
 		GetBaseComponents(allComponents),
 		GetEntities(allComponents),
 		GetObjects(allComponents),
@@ -254,19 +284,24 @@ func (t *typ) IsArray() bool {
 	return t.array
 }
 
-func NewAttribute(name, comment, typeName string, isArray bool) Attribute {
+func NewAttribute(name, comment, typeName string, isArray bool) (Attribute, error) {
+	t, err := NewType(typeName, isArray)
 	return &attribute{
 		newNamed(name),
 		newCommented(comment),
-		NewType(typeName, isArray),
-	}
+		t,
+	}, err
 }
 
-func NewType(name string, isArray bool) Type {
+func NewType(name string, isArray bool) (Type, error) {
+	if strings.Contains(name, " ") {
+		return nil, fmt.Errorf("Invalid type: [%s]", name)
+	}
+
 	return &typ{
 		name:  name,
 		array: isArray,
-	}
+	}, nil
 }
 
 // method is a concrete implementation of the Method interface
@@ -286,7 +321,6 @@ func (m *method) ReturnVals() []Param {
 }
 
 func NewMethod(name, comment string, params, returnVals []Param) (Method, error) {
-	// TODO Refactor together validations
 	if strings.Contains(name, " ") {
 		return nil, fmt.Errorf("Invalid method name: [%s]", name)
 	}
@@ -317,6 +351,16 @@ func GetEntities(components []Component) []Entity {
 	return entities
 }
 
+func GetEnums(components []Component) []Enum {
+	enums := []Enum{}
+	for _, component := range components {
+		if e, ok := component.(Enum); ok {
+			enums = append(enums, e)
+		}
+	}
+	return enums
+}
+
 func GetObjects(components []Component) []Object {
 	objects := []Object{}
 	for _, component := range components {
@@ -331,8 +375,8 @@ func GetBaseComponents(components []Component) []Component {
 	filteredComponents := []Component{}
 	for _, component := range components {
 		switch t := component.(type) {
+		case Enum:
 		case Object:
-			continue
 		case Entity:
 			continue
 		default:

@@ -1,0 +1,289 @@
+-- A simple, workable AST for Python source code.
+
+Identifier
+* Value String
+
+Object
+
+Singleton
+
+Position
+* Line Integer
+* ColOffset Integer
+
+Node :: Object
+* Position Position
+
+ExpressionContext = {Load, Store, Del, AugLoad, AugStore, Param}
+
+BoolOp = {And, Or}
+
+Op = {Add, Sub, Mult, Div, Modulo, Pow, LShift, RShift, BitOr, BitXor, BitAnd, FloorDiv}
+
+UnaryOp = {Invert, Not, UAdd, USub}
+
+BinaryOp = {Eq, NotEq, Lt, LtE, Gt, GtE, Is, IsNot, In, NotIn}
+
+AST :: Node
+* Nodes []Node
+* Add (Node Node)
+
+Module :: Node
+* Body []Statement
+
+Expression :: Node
+* Body []Statement
+* ExpressionType String
+
+Suite :: Node
+* Body []Statement
+
+Statement :: Node
+* StatementType String
+
+Bytes :: Node
+
+DocString :: Expression
+
+CommentLine :: Statement
+* Text String
+
+FunctionDef :: Statement
+* Name Identifier
+* Args Arguments
+* Body []Statement
+* DecoratorList []Expression
+* Returns Expression -- The return type. The return expression in the body is somethign ddifferent.
+
+ClassDef :: Statement
+* Name Identifier
+* Bases []Expression
+* Keywords []KeywordNode
+* Starargs Expression
+* Kwargs Expression
+* Body []Statement
+* DecoratorList []Expression
+
+Keyword = {False, None, True, _and, _as, _assert, _async, _await, _break, _class, _continue, _def, _del, _elif, _else, _except, _finally, _for, _from, _global, _if, _import, _in, _is, _lambda, _nonlocal, _not, _or, _pass, _raise, _return, _try, _while, _with, _yield}
+
+Return :: Statement
+* ReturnValue Expression
+
+Delete :: Statement
+* Targets []Expression
+
+Assign :: Statement
+* Targets []Expression
+* Value Expression
+
+AugAssign :: Statement
+* Target Expression
+* Op Op
+* Value Expression
+
+For :: Statement
+* Target Expression
+* Iter Expression
+* Body []Statement
+* Orelse []Statement
+
+While :: Statement
+* Test Expression
+* Body []Statement
+* Orelse []Statement
+
+If :: Statement
+* Test Expression
+* Body []Statement
+* Orelse []Statement
+
+With :: Statement
+* Items []WithItem
+* Body []Statement
+
+Raise :: Statement
+* Exc Expression
+* Cause Expression
+
+Try :: Statement
+* Body []Statement
+* Handlers []ExceptHandler
+* Orelse []Statement
+* Finalbody []Statement
+
+Assert :: Statement
+* Test Expression
+* Msg Expression
+
+Import :: Statement
+* Names []Alias
+
+ImportFrom :: Statement
+* Module Identifier
+* Names []Alias
+* Level Integer
+
+Global :: Statement
+* GlobalNames []Identifier
+
+Nonlocal :: Statement
+* NonlocalNames []Identifier
+
+ExprStatement :: Statement
+* ExprValue Expression
+
+Pass :: Statement
+
+Break :: Statement
+
+Continue :: Statement
+
+BoolOpExpr :: Expression
+* Op BoolOp
+* Values []Expression
+
+BinOp :: Expression
+* Left Expression
+* Op Op
+* Right Expression
+
+UnaryOpExp :: Expression
+* Op UnaryOp
+* Operand Expression
+
+Lambda :: Expression
+* Args Arguments
+
+IfExp :: Expression
+* Test Expression
+* Orelse Expression
+
+Dict :: Expression
+* Keys []Expression
+* Values []Expression
+
+Set :: Expression
+* Elts []Expression
+
+ListComp :: Expression
+* Elt Expression
+* Generators []Comprehension
+
+SetComp :: Expression
+* Elt Expression
+* Generators []Comprehension
+
+DictComp :: Expression
+* Key Expression
+* Value Expression
+* Generators []Comprehension
+
+GeneratorExp :: Expression
+* Elt Expression
+* Generators []Comprehension
+
+Yield :: Expression
+* YieldValue Expression
+
+YieldFrom :: Expression
+* YieldFromValue Expression
+
+Compare :: Expression
+* Left Expression
+* Ops []BinaryOp
+* Comparators []Expression
+
+Call :: Expression
+* Func Expression
+* Args []Expression
+* Keywords []KeywordNode
+* Starargs Expression
+* Kwargs Expression
+
+Num :: Expression
+* N Object
+
+Str :: Expression
+* S String
+
+BytesExp :: Expression
+* S Bytes
+
+NameConstant :: Expression
+* Value Singleton
+
+Ellipsis :: Expression
+* Symbol String
+
+Attribute :: Expression
+* Value Expression
+* Attr Identifier
+* Ctx ExpressionContext
+
+Subscript :: Expression
+* Value Expression
+* Slice Slice
+* Ctx ExpressionContext
+
+Starred :: Expression
+* Value Expression
+* Ctx ExpressionContext
+
+Name :: Expression
+* Id Identifier
+* Ctx ExpressionContext
+
+List :: Expression
+* Elts []Expression
+* Ctx ExpressionContext
+
+Tuple :: Expression
+* Elts []Expression
+* Ctx ExpressionContext
+
+SliceBase :: Node
+
+Slice :: SliceBase
+* Lower Expression
+* Upper Expression
+* Step Expression
+
+ExtSlice :: SliceBase
+* Dims []Slice
+
+Index :: SliceBase
+* Value Expression
+
+Comprehension :: Expression
+* Target Expression
+* Iter Expression
+* Ifs []Expression
+
+ExceptHandler :: Node
+* ExpressionType Expression
+* Name Identifier
+* Body []Statement
+
+Arguments :: Node
+* Args []Arg
+* Vararg Arg
+* Kwonlyargs []Arg
+* KwDefaults []Expression
+* Kwarg Arg
+* Defaults []Expression
+
+Arg :: Node
+* Arg Identifier
+* Annotation Expression
+
+KeywordNode :: Node
+* Arg Identifier
+* Value Expression
+
+Alias :: Node
+* Name Identifier
+* AsName Identifier
+
+WithItem :: Node
+* ContextExpression Expression
+* OptionalVars Expression

@@ -7,6 +7,8 @@
 # GOPRIVATE="github.com/mattmunz/appkit" go get github.com/mattmunz/appkit
 
 gen() {
+  echo "Gen ANTLR code..."
+
   # antlr4-parse documentation/DesignLanguage.g4 design ./test/data/Test.1.nzsd.txt -tree
 
   outDir="model/designlanguage/parser"
@@ -16,6 +18,12 @@ gen() {
   antlr4 -Dlanguage=Go -package parser -o "$tempDir" documentation/design/DesignLanguage.g4
   rm -rf "$outDir/" && mv "$tempDir/documentation"/* "$outDir/"
   rm -rf "$tempDir"
+
+  echo "Gen nzsd models..."
+
+  designlanguage gen -d=false -t=go
+
+  # designlanguage --help
 }
 
 test() {
