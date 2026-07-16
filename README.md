@@ -5,7 +5,7 @@ Nonzero Sum Design Language definition and tools
 
 Software can be seen to have structural elements as well as aspects that are more fluid. It can be useful when defining the structure of an application to write down its design. This design might then be implemented in multiple languages and platforms.
 
-The Nonzero Sum Design Language is a part of the [Nonzero Sum Stack](https://nonzerosumsolutions.com/stack/index.html). The Nonzero Sum Stack is a set of recommended technologies and engineering processes for sustainable software development. For an example of an app built using the Stack (including Design Language) see [helloapp](https://github.com/mattmunz/helloapp).
+The Nonzero Sum Design Language is a part of the [Nonzero Sum Stack](https://nonzerosumsolutions.com/stack/index.html). The Nonzero Sum Stack is a set of recommended technologies and engineering processes for sustainable software development. For examples of apps built using the Stack (including Design Language) see [helloapp](https://github.com/mattmunz/helloapp) (Go) and [helloapp](https://github.com/mattmunz/helloapp) (Python).
 
 Design Language is a language and toolset for working with software designs. By automating the process of developing software structure from an abstract design, the cost of developing and maintaining an application can be reduced.
 
@@ -55,8 +55,16 @@ cd $PROJECT_DIR
 
 First print the code to the commandline.
 
+In Go...
+
 ```bash
-designlanguage gen 
+designlanguage gen -t go
+```
+
+Or Python...
+
+```bash
+designlanguage gen -t python
 ```
 
 Review the code and address any issues in the design that arise.
@@ -64,7 +72,7 @@ Review the code and address any issues in the design that arise.
 ### 4. Generate code
 
 ```bash
-designlanguage gen -d=false
+designlanguage gen -d=false -t <language>
 ```
 
 ### 5. Update your code to use the generated model code
@@ -75,10 +83,18 @@ designlanguage gen -d=false
 
 Presumably this is something like...
 
+In Go...
+
 ```bash
 go build
 go install
 myapp 
+```
+
+in python...
+
+```bash
+python3 my_app.py
 ```
 
 ## Syntax
@@ -96,11 +112,11 @@ In the future alternate syntaxes may be supported, as needed by the user base. A
 
 ### What target languages are supported?
 
-Currently, the only target language is Go but support for other languages is planned. Most likely the next one will be Python. If you have a language that you would like to be supported please [get in touch with us](contact).
+Currently, Go and Python are supported but support for other languages is planned. Most likely the next one will be Javascript/Typescript. If you have a language that you would like to be supported please [get in touch with us](contact).
 
 ### Can changes be made to the syntax?
 
-Sure. Conceivably multiple front ends can be used to allow multiple syntaxes. Simple changes to the defaul syntax may also be considered.
+Sure. Conceivably multiple front ends can be used to allow multiple syntaxes. Simple changes to the default syntax may also be considered.
 
 ### Why not use UML?
 
@@ -122,7 +138,7 @@ In a manner of speaking, yes. Ideally LLMs would be used to generate software de
 
 Simple structures and interfaces are easy to write in Go, Python Javascript, etc. So why introduce this special language for them?
 
-Simply put, the structure of your application is a special and important of what you are building. By using a specialized language, you can avoid errors. By using a toolchain that supportas multiple targets, you can harmonize multiple cooperating applications written in different languages. As the norm these days is multi-lingual programming, having a rock-solid core to build upon is quite important!
+Simply put, the structure of your application is a special and important aspect of what you are building. By using a specialized language, you can avoid errors. By using a toolchain that supportas multiple targets, you can harmonize multiple cooperating applications written in different languages. As the norm these days is multi-lingual programming, having a rock-solid core to build upon is quite important!
 
 ## Contributing
 
