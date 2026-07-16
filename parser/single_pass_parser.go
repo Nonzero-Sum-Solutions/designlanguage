@@ -20,6 +20,7 @@ const (
 	Component       ParserState = "component"
 	ComponentSpace  ParserState = "componentSpace"
 	ComponentLine1  ParserState = "componentLine1"
+	EnumLine        ParserState = "enumLine"
 )
 
 var nameRegex = regexp.MustCompile(`^[A-Z][a-zA-Z]*$`)
@@ -112,6 +113,11 @@ func parseLine(pContext *spParserContext, line string, lineNum int) error {
 		return nil
 	}
 
+	if pContext.lastLineType == EnumLine && line == "" {
+		pContext.lastLineType = ComponentSpace
+		return nil
+	}
+
 	if pContext.containerType == Component {
 		if err := parseInComponent(line, pContext); err != nil {
 			return err
@@ -126,7 +132,7 @@ func parseLine(pContext *spParserContext, line string, lineNum int) error {
 		return nil
 	}
 
-	return fmt.Errorf("%d: Unexpected state. Line: %s", lineNum, line)
+	return fmt.Errorf("%d: Unexpected state. Line: [%s], Context: %v", lineNum, line, pContext)
 }
 
 func parseAfterComponentSpace(line string, lineNum int, pContext *spParserContext) error {
@@ -135,6 +141,17 @@ func parseAfterComponentSpace(line string, lineNum int, pContext *spParserContex
 	}
 
 	if IsComponentLine1(line) {
+		if IsEnumLine(line) {
+			enum1, err := ParseEnum(line)
+			if err != nil {
+				return err
+			}
+			pContext.components = append(pContext.components, enum1)
+			pContext.lastLineType = EnumLine
+			pContext.containerType = Start
+			return nil
+		}
+
 		pContext.currComponentLines = []string{line}
 		pContext.lastLineType = ComponentLine1
 		pContext.containerType = Component
@@ -164,6 +181,16 @@ func parseInComponent(line string, pContext *spParserContext) error {
 
 func parseAfterDocCommentSpace(line string, pContext *spParserContext, lineNum int) error {
 	if IsComponentLine1(line) {
+		if IsEnumLine(line) {
+			enum1, err := ParseEnum(line)
+			if err != nil {
+				return err
+			}
+			pContext.components = append(pContext.components, enum1)
+			pContext.lastLineType = ComponentSpace // EnumLine
+			pContext.containerType = Start
+			return nil
+		}
 		pContext.currComponentLines = []string{line}
 		pContext.lastLineType = ComponentLine1
 		pContext.containerType = Component
@@ -213,6 +240,16 @@ func parseLine1(line string, pContext *spParserContext, lineNum int) error {
 	}
 
 	if IsComponentLine1(line) {
+		if IsEnumLine(line) {
+			enum1, err := ParseEnum(line)
+			if err != nil {
+				return err
+			}
+			pContext.components = append(pContext.components, enum1)
+			pContext.lastLineType = EnumLine
+			pContext.containerType = Start
+			return nil
+		}
 		pContext.currComponentLines = []string{line}
 		pContext.lastLineType = ComponentLine1
 		pContext.containerType = Component
@@ -227,6 +264,10 @@ func isComment(line string) bool {
 }
 
 func IsComponentLine1(line string) bool {
+	if IsEnumLine(line) {
+		return true
+	}
+
 	tokens := strings.Split(line, " :: ")
 	if len(tokens) < 1 || len(tokens) > 2 {
 		return false
@@ -238,6 +279,10 @@ func IsComponentLine1(line string) bool {
 	}
 
 	return nameRegex.MatchString(name) && nameRegex.MatchString(tokens[1])
+}
+
+func IsEnumLine(line string) bool {
+	return strings.Contains(line, " = {") && strings.HasSuffix(line, "}")
 }
 
 func parseComponent(lines []string) (model.Component, error) {
@@ -254,8 +299,13 @@ func parseComponent(lines []string) (model.Component, error) {
 		supertype = line1Tokens[1]
 	}
 
+	supertypeType, err := parseOptionalType(supertype)
+	if err != nil {
+		return nil, err
+	}
+
 	if len(lines) == 1 {
-		return model.NewComponent(name, "", supertype)
+		return model.NewComponent(name, "", supertypeType)
 	}
 
 	comment := ""
@@ -278,14 +328,14 @@ func parseComponent(lines []string) (model.Component, error) {
 	}
 
 	if len(attrs) == 0 && len(methods) == 0 {
-		return model.NewComponent(name, supertype, comment)
+		return model.NewComponent(name, comment, supertypeType)
 	}
 
 	if len(methods) > 0 {
-		return model.NewObject(name, comment, supertype, attrs, methods)
+		return model.NewObject(name, comment, supertypeType, attrs, methods)
 	}
 
-	return model.NewEntity(name, comment, supertype, attrs)
+	return model.NewEntity(name, comment, supertypeType, attrs)
 }
 
 func parseAttributesAndMethods(lines []string) ([]model.Attribute, []model.Method, error) {
@@ -326,10 +376,13 @@ func parseAttribute(text string) (model.Attribute, error) {
 	}
 	name := tokens[0]
 	typeExp := tokens[1]
-	typ := parseType(typeExp)
+	typ, err := parseType(typeExp)
+	if err != nil {
+		return nil, err
+	}
 
 	if len(tokens) == 2 {
-		return model.NewAttribute(name, "", typ.Name(), typ.IsArray()), nil
+		return model.NewAttribute(name, "", typ.Name(), typ.IsArray())
 	}
 
 	comment, err := parseEndOfLineComment(tokens[2:], text)
@@ -337,7 +390,7 @@ func parseAttribute(text string) (model.Attribute, error) {
 		return nil, err
 	}
 
-	return model.NewAttribute(name, comment, typ.Name(), typ.IsArray()), nil
+	return model.NewAttribute(name, comment, typ.Name(), typ.IsArray())
 }
 
 func ParseMethod(methodText string) (model.Method, error) {
@@ -401,6 +454,25 @@ func ParseMethod(methodText string) (model.Method, error) {
 	return model.NewMethod(name, comment, params, returnVals)
 }
 
+// TODO Need to use this somewhere
+func ParseEnum(text string) (model.Enum, error) {
+	if !strings.Contains(text, " = {") {
+		return nil, fmt.Errorf("No enum match: %s", text)
+	}
+
+	tokens := strings.Split(text, " = {")
+
+	if len(tokens) != 2 {
+		return nil, fmt.Errorf("Too few tokens: %s", text)
+	}
+
+	name := tokens[0]
+
+	values := strings.Split(tokens[1][:len(tokens[1])-1], ", ")
+
+	return model.NewEnum(name, values...)
+}
+
 // Input may either be in one of the following forms.
 // ()
 // ""
@@ -434,8 +506,8 @@ func parseParam(paramExp string) (model.Param, error) {
 	if len(tokens) != 2 {
 		return nil, fmt.Errorf("Wrong number of param elements: %s", paramExp)
 	}
-
-	return model.NewParam(tokens[0], parseType(tokens[1])), nil
+	t, err := parseType(tokens[1])
+	return model.NewParam(tokens[0], t), err
 }
 
 func parseEndOfLineComment(tokens []string, text string) (string, error) {
@@ -450,7 +522,15 @@ func parseEndOfLineComment(tokens []string, text string) (string, error) {
 	return strings.Join(tokens[1:], " "), nil
 }
 
-func parseType(typeExp string) model.Type {
+func parseOptionalType(typeExp string) (model.Type, error) {
+	if typeExp == "" {
+		return nil, nil
+	}
+
+	return parseType(typeExp)
+}
+
+func parseType(typeExp string) (model.Type, error) {
 	isArray := false
 	name := typeExp
 	if strings.HasPrefix(typeExp, "[]") {

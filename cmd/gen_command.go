@@ -7,7 +7,8 @@ import (
 
 	"github.com/mattmunz/appkit/cmd"
 	gmodel "github.com/mattmunz/appkit/model/gen/appkit"
-	"github.com/mattmunz/designlanguage/gen"
+	"github.com/mattmunz/designlanguage/gen/gengo"
+	"github.com/mattmunz/designlanguage/gen/genpy"
 )
 
 func newGenCmd(cli gmodel.CLI) *cobra.Command {
@@ -20,9 +21,11 @@ func newGenCmd(cli gmodel.CLI) *cobra.Command {
 	dryRunFlag := genCmd.Flags().BoolP("dryRun", "d", true, "True to read but not make changes on disk, true by default.")
 	projectDirFlag := genCmd.Flags().StringP("projectDir", "p", "",
 		"Path to the project directory.")
+	targetFlag := genCmd.Flags().StringP("target", "t", "",
+		"Target language for the generated source code.")
 
 	doDLM1 := func(cli gmodel.CLI, cmd *cobra.Command, args []string) error {
-		return doGen(cli.Logger(), cmd, args, *dryRunFlag, *projectDirFlag)
+		return doGen(cli.Logger(), cmd, args, *dryRunFlag, *projectDirFlag, *targetFlag)
 	}
 	genCmd.Run = cmd.WrapRunner(doDLM1, cli)
 
@@ -36,11 +39,18 @@ func validateGenArgs(_ *cobra.Command, args []string) error {
 	return nil
 }
 
-func doGen(logger klog.Logger, cmd *cobra.Command, args []string, dryRun bool, projectDir string) error {
+func doGen(logger klog.Logger, cmd *cobra.Command, args []string, dryRun bool, projectDir, target string) error {
 	err := validateGenArgs(cmd, args)
 	if err != nil {
 		return err
 	}
 
-	return gen.GenerateGoSourceForDL(projectDir, logger, dryRun)
+	switch target {
+	case "go", "golang":
+		return gengo.GenerateGoSourceForDL(projectDir, logger, dryRun)
+	case "python", "py":
+		return genpy.GeneratePySourceForDL(projectDir, logger, dryRun)
+	default:
+		return errors.New("Invalid target language: " + target)
+	}
 }

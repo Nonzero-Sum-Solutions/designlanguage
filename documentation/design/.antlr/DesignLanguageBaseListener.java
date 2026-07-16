@@ -28,6 +28,30 @@ public class DesignLanguageBaseListener implements DesignLanguageListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterPreamble(DesignLanguageParser.PreambleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPreamble(DesignLanguageParser.PreambleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAuthor(DesignLanguageParser.AuthorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAuthor(DesignLanguageParser.AuthorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterComponent(DesignLanguageParser.ComponentContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -35,6 +59,18 @@ public class DesignLanguageBaseListener implements DesignLanguageListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitComponent(DesignLanguageParser.ComponentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSimpleComponent(DesignLanguageParser.SimpleComponentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSimpleComponent(DesignLanguageParser.SimpleComponentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

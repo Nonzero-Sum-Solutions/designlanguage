@@ -17,6 +17,26 @@ public interface DesignLanguageListener extends ParseTreeListener {
 	 */
 	void exitDesign(DesignLanguageParser.DesignContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DesignLanguageParser#preamble}.
+	 * @param ctx the parse tree
+	 */
+	void enterPreamble(DesignLanguageParser.PreambleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DesignLanguageParser#preamble}.
+	 * @param ctx the parse tree
+	 */
+	void exitPreamble(DesignLanguageParser.PreambleContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DesignLanguageParser#author}.
+	 * @param ctx the parse tree
+	 */
+	void enterAuthor(DesignLanguageParser.AuthorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DesignLanguageParser#author}.
+	 * @param ctx the parse tree
+	 */
+	void exitAuthor(DesignLanguageParser.AuthorContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DesignLanguageParser#component}.
 	 * @param ctx the parse tree
 	 */
@@ -26,6 +46,16 @@ public interface DesignLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitComponent(DesignLanguageParser.ComponentContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DesignLanguageParser#simpleComponent}.
+	 * @param ctx the parse tree
+	 */
+	void enterSimpleComponent(DesignLanguageParser.SimpleComponentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DesignLanguageParser#simpleComponent}.
+	 * @param ctx the parse tree
+	 */
+	void exitSimpleComponent(DesignLanguageParser.SimpleComponentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DesignLanguageParser#field}.
 	 * @param ctx the parse tree

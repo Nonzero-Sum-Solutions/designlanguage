@@ -14,7 +14,7 @@ import (
 
 func TestNewObject(t *testing.T) {
 	name := "Shape"
-	component, err := model.NewObject(name, "", "", nil, nil)
+	component, err := model.NewObject(name, "", nil, nil, nil)
 	require.NoError(t, err)
 	require.NotNil(t, component)
 	require.Equal(t, name, component.Name())

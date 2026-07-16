@@ -87,14 +87,14 @@ func addComponentANTLR(cc p.IComponentContext, objects []model.Object, component
 	}
 
 	if len(methods) > 0 {
-		obj, err := model.NewObject(name, objComment, "", attributes, methods)
+		obj, err := model.NewObject(name, objComment, nil, attributes, methods)
 		if err != nil {
 			return nil, nil, nil, err
 		}
 		objects = append(objects, obj)
 		components = append(components, obj)
 	} else {
-		ent, err := model.NewEntity(name, objComment, "", attributes)
+		ent, err := model.NewEntity(name, objComment, nil, attributes)
 		if err != nil {
 			return nil, nil, nil, err
 		}
@@ -105,15 +105,15 @@ func addComponentANTLR(cc p.IComponentContext, objects []model.Object, component
 }
 
 func addAttribute(attr p.IAttributeContext, attributes []model.Attribute) ([]model.Attribute, error) {
-	param, err := GetParam(attr.Param())
-	if err != nil {
-		return nil, err
-	}
+	// param, err := GetParam(attr.Param())
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	attrComment := ""
+	//attrComment := ""
 	panic("NYI attrComment")
 
-	return append(attributes, model.NewAttribute(param.Name(), attrComment, param.Type().Name(), param.Type().IsArray())), nil
+	//return append(attributes, model.NewAttribute(param.Name(), attrComment, param.Type().Name(), param.Type().IsArray())), nil
 }
 
 func addMethod(method p.IMethodContext, methods []model.Method) ([]model.Method, error) {
@@ -178,10 +178,15 @@ func GetParam(param p.IParamContext) (model.Param, error) {
 	typeName := attrType.NAME().GetText()
 
 	typeArray := attrType.ARRAY()
+	t, err := model.NewType(typeName, false)
+	if err != nil {
+		return nil, err
+	}
 	if typeArray == nil {
-		return model.NewParam(attrName, model.NewType(typeName, false)), nil
+		return model.NewParam(attrName, t), nil
 	}
 
 	isArray := len(typeArray.GetText()) > 0
-	return model.NewParam(attrName, model.NewType(typeName, isArray)), nil
+	t, err = model.NewType(typeName, isArray)
+	return model.NewParam(attrName, t), err
 }
