@@ -3,12 +3,7 @@
 ### Major features
 
 
-* Python target
-  * Start with go template approach
-    * Get code generator working for hellopy project
-    * Get it to run
-    * Get style to be idiomatic
-    * Address all TODOs
+* Make Python code based on generated models more idiomatic
 * See about adding more layers of abstraction for the code generation bit
 * This python AST is not good for go reflection. Make more particular.
 * Extract type mappings to config file so that they can be customized
@@ -30,6 +25,7 @@
 
 ## Done
 
+* Python target
 * Find an intro article to publish: https://nonzerosumsolutions.com/library/gettingStarted.html
 * Find a second article to publish: https://nonzerosumsolutions.com/library/sustainability.html
 * Make documentation: X Getting started, X Contriubuting, etc.
