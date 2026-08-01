@@ -3,7 +3,7 @@ package unit
 import (
 	"testing"
 
-	"github.com/mattmunz/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
 	"github.com/stretchr/testify/require"
 )
 

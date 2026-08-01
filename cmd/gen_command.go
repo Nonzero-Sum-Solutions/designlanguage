@@ -5,10 +5,10 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/mattmunz/appkit/cmd"
-	gmodel "github.com/mattmunz/appkit/model/gen/appkit"
-	"github.com/mattmunz/designlanguage/gen/gengo"
-	"github.com/mattmunz/designlanguage/gen/genpy"
+	"github.com/Nonzero-Sum-Solutions/appkit/cmd"
+	gmodel "github.com/Nonzero-Sum-Solutions/appkit/model/gen/appkit"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/gen/gengo"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/gen/genpy"
 )
 
 func newGenCmd(cli gmodel.CLI) *cobra.Command {

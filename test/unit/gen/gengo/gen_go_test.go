@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/mattmunz/designlanguage/gen/gengo"
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/test/unit"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/gen/gengo"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/test/unit"
 )
 
 func TestRenderEmptyComponent(t *testing.T) {
@@ -28,6 +28,23 @@ func TestRenderEntity(t *testing.T) {
 
 	rectangle := unit.NewRectangle(t)
 	src, err := gengo.RenderEntitySource(rectangle)
+
+	require.NoError(t, err)
+	require.Equal(t, expectedSource, src)
+
+}
+
+func TestObjectAlias(t *testing.T) {
+	expectedSource := `type Shape interface {
+	ID() any
+}`
+
+	shape, err := model.NewEntity(
+		"Shape", "", nil,
+		[]model.Attribute{unit.NewAttr(t, "ID", "", "Object", false)},
+	)
+
+	src, err := gengo.RenderEntitySource(shape)
 
 	require.NoError(t, err)
 	require.Equal(t, expectedSource, src)

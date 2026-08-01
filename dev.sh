@@ -4,7 +4,7 @@
 # Install antlr: pip install antlr4-tools
 
 # To get from private reops (temporary)
-# GOPRIVATE="github.com/mattmunz/appkit" go get github.com/mattmunz/appkit
+# GOPRIVATE="github.com/Nonzero-Sum-Solutions/appkit" go get github.com/Nonzero-Sum-Solutions/appkit
 
 gen() {
   echo "Gen ANTLR code..."

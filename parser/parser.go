@@ -4,7 +4,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/mattmunz/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
 )
 
 type Parser interface {

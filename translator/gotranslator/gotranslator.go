@@ -5,16 +5,18 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Nonzero-Sum-Solutions/appkit/maps"
+	akstrings "github.com/Nonzero-Sum-Solutions/appkit/strings"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
 	"github.com/dave/jennifer/jen"
-	"github.com/mattmunz/appkit/maps"
-	akstrings "github.com/mattmunz/appkit/strings"
-	"github.com/mattmunz/designlanguage/model"
 )
 
+// TODO This is duplicated in gen_go_source. Why?
 var goTypeByDLType = map[string]*goType{
 	"String":      newGoType("", "", "string", false),
 	"Int":         newGoType("", "", "int", false),
 	"Integer":     newGoType("", "", "int", false),
+	"Object":      newGoType("", "", "any", false),
 	"Error":       newGoType("", "", "error", false),
 	"CommandImpl": newGoType("*", packageNamesByAliasForImport["cobra"], "Command", false),
 	"Logger":      newGoType("", packageNamesByAliasForImport["log"], "Logger", false),

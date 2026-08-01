@@ -1,11 +1,11 @@
 package pytranslator
 
 import (
+	"github.com/Nonzero-Sum-Solutions/appkit/maps"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model/gen/pyast"
+	pyastm "github.com/Nonzero-Sum-Solutions/designlanguage/model/pyast"
 	"github.com/iancoleman/strcase"
-	"github.com/mattmunz/appkit/maps"
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/model/gen/pyast"
-	pyastm "github.com/mattmunz/designlanguage/model/pyast"
 )
 
 var pyTypeByDLType = map[string]*pyType{
