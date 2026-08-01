@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/parser"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/parser"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

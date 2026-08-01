@@ -3,9 +3,9 @@ package parser
 import (
 	"fmt"
 
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	p "github.com/Nonzero-Sum-Solutions/designlanguage/model/designlanguage/parser"
 	"github.com/antlr4-go/antlr/v4"
-	"github.com/mattmunz/designlanguage/model"
-	p "github.com/mattmunz/designlanguage/model/designlanguage/parser"
 )
 
 type antlrParser struct {

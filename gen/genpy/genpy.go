@@ -3,12 +3,12 @@ package genpy
 import (
 	klog "github.com/go-kit/kit/log"
 
-	"github.com/mattmunz/designlanguage/gen"
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/model/gen/pyast"
-	pyastm "github.com/mattmunz/designlanguage/model/pyast"
-	"github.com/mattmunz/designlanguage/translator/pytranslator"
-	"github.com/mattmunz/designlanguage/writer/pywriter"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/gen"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model/gen/pyast"
+	pyastm "github.com/Nonzero-Sum-Solutions/designlanguage/model/pyast"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/translator/pytranslator"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/writer/pywriter"
 )
 
 func RenderDesignPySource(design model.Design) (string, error) {

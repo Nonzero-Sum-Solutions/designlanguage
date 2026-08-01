@@ -5,7 +5,7 @@ Nonzero Sum Design Language definition and tools
 
 Software can be seen to have structural elements as well as aspects that are more fluid. It can be useful when defining the structure of an application to write down its design. This design might then be implemented in multiple languages and platforms.
 
-The Nonzero Sum Design Language is a part of the [Nonzero Sum Stack](https://nonzerosumsolutions.com/stack/index.html). The Nonzero Sum Stack is a set of recommended technologies and engineering processes for sustainable software development. For examples of apps built using the Stack (including Design Language) see [helloapp](https://github.com/mattmunz/helloapp) (Go) and [helloapppy](https://github.com/mattmunz/helloapppy) (Python).
+The Nonzero Sum Design Language is a part of the [Nonzero Sum Stack](https://nonzerosumsolutions.com/stack/index.html). The Nonzero Sum Stack is a set of recommended technologies and engineering processes for sustainable software development. For examples of apps built using the Stack (including Design Language) see [helloapp](https://github.com/Nonzero-Sum-Solutions/helloapp) (Go) and [helloapppy](https://github.com/Nonzero-Sum-Solutions/helloapppy) (Python).
 
 Design Language is a language and toolset for working with software designs. By automating the process of developing software structure from an abstract design, the cost of developing and maintaining an application can be reduced.
 
@@ -42,7 +42,7 @@ Your design should be saved to a path matching `$PROJECT_DIR/documentation/desig
 ### 3. Install
 
 ```bash
-go install github.com/mattmunz/designlanguage
+go install github.com/Nonzero-Sum-Solutions/designlanguage
 ```
 
 ### 4. Go to your project directory

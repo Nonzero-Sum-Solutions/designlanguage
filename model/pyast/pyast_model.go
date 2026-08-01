@@ -3,8 +3,8 @@ package pyast
 import (
 	"errors"
 
-	"github.com/mattmunz/designlanguage/model/gen/pyast"
-	pyastg "github.com/mattmunz/designlanguage/model/gen/pyast"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model/gen/pyast"
+	pyastg "github.com/Nonzero-Sum-Solutions/designlanguage/model/gen/pyast"
 )
 
 type node struct{}

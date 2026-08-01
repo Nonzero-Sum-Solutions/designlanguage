@@ -3,9 +3,9 @@ package gen
 import (
 	"testing"
 
-	"github.com/mattmunz/designlanguage/gen"
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/test/unit"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/gen"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/test/unit"
 	"github.com/stretchr/testify/require"
 )
 

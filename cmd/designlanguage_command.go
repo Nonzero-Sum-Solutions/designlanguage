@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/mattmunz/appkit"
-	model "github.com/mattmunz/appkit/model"
-	gmodel "github.com/mattmunz/appkit/model/gen/appkit"
+	"github.com/Nonzero-Sum-Solutions/appkit"
+	model "github.com/Nonzero-Sum-Solutions/appkit/model"
+	gmodel "github.com/Nonzero-Sum-Solutions/appkit/model/gen/appkit"
 )
 
 const version = "1.1.1"

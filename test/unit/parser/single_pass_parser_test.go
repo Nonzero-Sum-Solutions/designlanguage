@@ -3,9 +3,9 @@ package parser
 import (
 	"testing"
 
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/parser"
-	"github.com/mattmunz/designlanguage/test/unit"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/parser"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/test/unit"
 	"github.com/stretchr/testify/require"
 )
 

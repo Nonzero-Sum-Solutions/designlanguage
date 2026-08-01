@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/mattmunz/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
 )
 
 type ParserState string

@@ -4,10 +4,10 @@ import (
 	"github.com/dave/jennifer/jen"
 	klog "github.com/go-kit/kit/log"
 
-	"github.com/mattmunz/designlanguage/gen"
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/translator/gotranslator"
-	"github.com/mattmunz/designlanguage/writer/gowriter"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/gen"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/translator/gotranslator"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/writer/gowriter"
 )
 
 func RenderDesignGoSource(design model.Design) (string, error) {

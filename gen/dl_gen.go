@@ -9,9 +9,9 @@ import (
 
 	klog "github.com/go-kit/kit/log"
 
-	"github.com/mattmunz/appkit/misc"
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/parser"
+	"github.com/Nonzero-Sum-Solutions/appkit/misc"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/parser"
 )
 
 type DesignList struct {

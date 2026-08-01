@@ -6,14 +6,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/mattmunz/designlanguage/gen/genpy"
-	"github.com/mattmunz/designlanguage/model"
-	"github.com/mattmunz/designlanguage/test/unit"
-	"github.com/mattmunz/designlanguage/translator/pytranslator"
-	"github.com/mattmunz/designlanguage/writer/pywriter"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/gen/genpy"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/test/unit"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/translator/pytranslator"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/writer/pywriter"
 
-	pyast "github.com/mattmunz/designlanguage/model/gen/pyast"
-	pyastm "github.com/mattmunz/designlanguage/model/pyast"
+	pyast "github.com/Nonzero-Sum-Solutions/designlanguage/model/gen/pyast"
+	pyastm "github.com/Nonzero-Sum-Solutions/designlanguage/model/pyast"
 )
 
 func TestRenderPyEmptyComponent(t *testing.T) {
