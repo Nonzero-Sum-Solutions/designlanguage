@@ -8,6 +8,7 @@ import (
 
 	"github.com/Nonzero-Sum-Solutions/designlanguage/model"
 	"github.com/Nonzero-Sum-Solutions/designlanguage/parser"
+	"github.com/Nonzero-Sum-Solutions/designlanguage/test/unit"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -15,7 +16,7 @@ import (
 func TestNewObject(t *testing.T) {
 	name := "Shape"
 	component, err := model.NewObject(name, "", nil, nil, nil)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.NotNil(t, component)
 	require.Equal(t, name, component.Name())
 }
@@ -143,14 +144,14 @@ func getDesign(t *testing.T, testFileSubpath string, namespace string, expectedB
 	absPath, err := filepath.Abs(
 		filepath.Join(getTestDataPath(t), testFileSubpath),
 	)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err, "filepath.Abs")
 
 	designParser := parser.NewParser()
 
 	require.FileExists(t, absPath)
 
-	design, err := designParser.Parse(absPath, namespace)
-	require.NoError(t, err)
+	design, err1 := designParser.Parse(absPath, namespace)
+	require.Nil(t, err1, "Parse error. error: [%+v]", err1)
 
 	require.Len(t, design.BaseComponents(), expectedBaseComponentsLength, "Wrong base component count.")
 	require.Len(t, design.Entities(), expectedEntitiesLength, "Wrong entity count.")

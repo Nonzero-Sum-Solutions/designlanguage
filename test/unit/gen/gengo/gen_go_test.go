@@ -16,7 +16,7 @@ func TestRenderEmptyComponent(t *testing.T) {
 	plane := unit.NewPlane(t)
 	src, err := gengo.RenderComponentSource(plane)
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -29,7 +29,7 @@ func TestRenderEntity(t *testing.T) {
 	rectangle := unit.NewRectangle(t)
 	src, err := gengo.RenderEntitySource(rectangle)
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 
 }
@@ -46,7 +46,7 @@ func TestObjectAlias(t *testing.T) {
 
 	src, err := gengo.RenderEntitySource(shape)
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 
 }
@@ -60,7 +60,7 @@ func TestTypeAlias(t *testing.T) {
 	labelledValue := unit.NewLabelledValue(t)
 	src, err := gengo.RenderEntitySource(labelledValue)
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -72,7 +72,7 @@ func TestRenderObject(t *testing.T) {
 
 	src, err := gengo.RenderObjectSource(unit.NewSpinner(t))
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -84,7 +84,7 @@ func TestRenderPersonRepository(t *testing.T) {
 
 	src, err := gengo.RenderObjectSource(unit.NewPersonRepo(t))
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -111,7 +111,7 @@ type Spinner interface {
 	design := model.NewDesign("", "", "geometry", []model.Component{plane, rectangle, spinner})
 
 	src, err := gengo.RenderDesignGoSource(design)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -126,10 +126,10 @@ const (
 )`
 
 	enumExpr, err := model.NewEnum("Shape", "Ellipse", "Torus", "Star", "Rhombus")
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 
 	src, err := gengo.RenderEnumSource(enumExpr)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -169,14 +169,14 @@ type SpinningSquare interface {
 	design := model.NewDesign("", "", "shapes", []model.Component{enum1, rectangle, square, spinningSquare})
 
 	src, err := gengo.RenderDesignGoSource(design)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
 func TestRenderEmptySubclass(t *testing.T) {
 	expectedSource := `package pyast
 
-type Object interface{}
+type PyObject interface{}
 
 type Statement interface {
 	Node
@@ -188,33 +188,33 @@ type Position interface {
 }
 
 type Node interface {
-	Object
+	PyObject
 
 	Position() Position
 }
 `
-	o, err := model.NewComponent("Object", "", nil)
-	require.NoError(t, err)
+	o, err := model.NewComponent("PyObject", "", nil)
+	unit.RequireNoError(t, err)
 
 	p, err := model.NewEntity(
 		"Position", "", nil,
 		[]model.Attribute{unit.NewAttr(t, "Line", "", "Int", false), unit.NewAttr(t, "ColOffset", "", "Int", false)},
 	)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 
 	n, err := model.NewEntity(
-		"Node", "", unit.NewType(t, "Object"),
+		"Node", "", unit.NewType(t, "PyObject"),
 		[]model.Attribute{unit.NewAttr(t, "Position", "", "Position", false)},
 	)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 
 	s, err := model.NewComponent("Statement", "", unit.NewType(t, "Node"))
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 
 	design := model.NewDesign("", "", "pyast", []model.Component{o, p, n, s})
 
 	src, err := gengo.RenderDesignGoSource(design)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -259,6 +259,6 @@ type CommandFactory interface {
 	design := unit.NewAppkitDesign(t)
 
 	src, err := gengo.RenderDesignGoSource(design)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }

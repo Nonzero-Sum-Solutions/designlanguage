@@ -3,11 +3,14 @@
 ### Major features
 
 
+* unit.RequireNoError is broken. It does not allow for nil custom errors. MAke a better version and move to appkit
+* Make sure all parse errors give a line number
 * Make Python code based on generated models more idiomatic
 * See about adding more layers of abstraction for the code generation bit
 * This python AST is not good for go reflection. Make more particular.
 * Extract type mappings to config file so that they can be customized
 * Find all the structs in the code and add them to design language files for this project
+* Need a way to support nullability / optionality of attributes. Data layerr uses pointer to string???
 * Javascript target
 * Typescript target
 * WASM target

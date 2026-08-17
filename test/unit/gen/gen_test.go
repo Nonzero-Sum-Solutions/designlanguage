@@ -12,7 +12,7 @@ import (
 func TestParseDLMFilePath1(t *testing.T) {
 	ns, fn, err := gen.ParseDLMFilePath("/foo/bar/projects/baz/documentation/design", "/foo/bar/projects/baz/documentation/design/Thing1.Design.md")
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, "", ns)
 	require.Equal(t, "Thing1.Design.md", fn)
 }
@@ -20,7 +20,7 @@ func TestParseDLMFilePath1(t *testing.T) {
 func TestParseDLMFilePath2(t *testing.T) {
 	ns, fn, err := gen.ParseDLMFilePath("/foo/bar/projects/baz/documentation/design", "/foo/bar/projects/baz/documentation/design/universe/Thing1.Design.md")
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, "universe", ns)
 	require.Equal(t, "Thing1.Design.md", fn)
 }
@@ -28,7 +28,7 @@ func TestParseDLMFilePath2(t *testing.T) {
 func TestParseDLMFilePath3(t *testing.T) {
 	ns, fn, err := gen.ParseDLMFilePath("/foo/bar/projects/baz/documentation/design", "/foo/bar/projects/baz/documentation/design/universe/sol/Earth.Design.md")
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, "universe/sol", ns)
 	require.Equal(t, "Earth.Design.md", fn)
 }

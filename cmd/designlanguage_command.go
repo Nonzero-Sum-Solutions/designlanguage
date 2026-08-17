@@ -8,7 +8,7 @@ import (
 	gmodel "github.com/Nonzero-Sum-Solutions/appkit/model/gen/appkit"
 )
 
-const version = "1.1.1"
+const version = "1.1.2"
 
 var cli = newCLI()
 

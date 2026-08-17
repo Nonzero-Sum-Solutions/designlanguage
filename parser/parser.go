@@ -8,7 +8,7 @@ import (
 )
 
 type Parser interface {
-	Parse(path, namespace string) (model.Design, error)
+	Parse(path, namespace string) (model.Design, *ParseError)
 }
 
 func NewParser() Parser {

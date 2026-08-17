@@ -13,13 +13,18 @@ import (
 
 // TODO This is duplicated in gen_go_source. Why?
 var goTypeByDLType = map[string]*goType{
+	"Bool":        newGoType("", "", "bool", false),
+	"Boolean":     newGoType("", "", "bool", false),
 	"String":      newGoType("", "", "string", false),
+	"Date":        newGoType("", "", "time.Time", false),
 	"Int":         newGoType("", "", "int", false),
 	"Integer":     newGoType("", "", "int", false),
 	"Object":      newGoType("", "", "any", false),
 	"Error":       newGoType("", "", "error", false),
 	"CommandImpl": newGoType("*", packageNamesByAliasForImport["cobra"], "Command", false),
 	"Logger":      newGoType("", packageNamesByAliasForImport["log"], "Logger", false),
+	"Time":        newGoType("", packageNamesByAliasForImport["time"], "Time", false),
+	"UUID":        newGoType("", packageNamesByAliasForImport["uuid"], "UUID", false),
 }
 
 type goType struct {
@@ -35,6 +40,8 @@ func newGoType(prefix, packageName, name string, isArray bool) *goType {
 var aliasesByPackageNameForImport = map[string]string{
 	"github.com/go-kit/kit/log": "log",
 	"github.com/spf13/cobra":    "cobra",
+	"time":                      "time",
+	"github.com/google/uuid":    "uuid",
 }
 
 var packageNamesByAliasForImport = maps.InvertMap(aliasesByPackageNameForImport)

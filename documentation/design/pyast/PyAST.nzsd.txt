@@ -3,7 +3,7 @@
 Identifier
 * Value String
 
-Object
+PyObject
 
 Singleton
 
@@ -11,7 +11,7 @@ Position
 * Line Integer
 * ColOffset Integer
 
-Node :: Object
+Node :: PyObject
 * Position Position
 
 ExpressionContext = {Load, Store, Del, AugLoad, AugStore, Param}
@@ -201,7 +201,7 @@ Call :: Expression
 * Kwargs Expression
 
 Num :: Expression
-* N Object
+* N PyObject
 
 Str :: Expression
 * S String

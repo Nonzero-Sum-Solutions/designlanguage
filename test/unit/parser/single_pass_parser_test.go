@@ -11,26 +11,26 @@ import (
 
 func TestParseMethod1(t *testing.T) {
 	method, err := model.NewMethod("Foo", "", []model.Param{}, []model.Param{})
-	require.NoError(t, err)
+	require.Nil(t, err)
 	requireParsedMethodEqual(t, "Foo ()", method)
 }
 
 func TestParseEnum(t *testing.T) {
 	enum1, err := model.NewEnum("Color", "Red", "Orangle", "Yellow", "Green")
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	requireParsedEnumEqual(t, "Color = {Red, Orangle, Yellow, Green}", enum1)
 }
 
 func TestParseMethod2(t *testing.T) {
 	params := []model.Param{model.NewParam("Bar", unit.NewType(t, "Baz"))}
 	method, err := model.NewMethod("Foo", "", params, []model.Param{})
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	requireParsedMethodEqual(t, "Foo (Bar Baz)", method)
 }
 
 func TestParseMethod3(t *testing.T) {
 	method, err := model.NewMethod("Foo", "", []model.Param{}, []model.Param{})
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	requireParsedMethodEqual(t, "Foo () -> ()", method)
 }
 
@@ -38,7 +38,7 @@ func TestParseMethod4(t *testing.T) {
 	params := []model.Param{model.NewParam("Bar", unit.NewType(t, "Baz"))}
 	returnVals := []model.Param{model.NewParam("This", unit.NewType(t, "That"))}
 	method, err := model.NewMethod("Foo", "", params, returnVals)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	requireParsedMethodEqual(t, "Foo (Bar Baz) -> (This That)", method)
 }
 
@@ -46,7 +46,7 @@ func TestParseMethod5(t *testing.T) {
 	params := []model.Param{model.NewParam("Bar", unit.NewType(t, "Baz"))}
 	returnVals := []model.Param{model.NewParam("This", unit.NewType(t, "That"))}
 	method, err := model.NewMethod("Foo", "A comment!", params, returnVals)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	requireParsedMethodEqual(t, "Foo (Bar Baz) -> (This That) -- A comment!", method)
 }
 
@@ -57,13 +57,13 @@ func TestParseMethod6(t *testing.T) {
 	}
 	returnVals := []model.Param{model.NewParam("Which", unit.NewType(t, "What"))}
 	method, err := model.NewMethod("Foo", "", params, returnVals)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	requireParsedMethodEqual(t, "Foo (Bar Baz, This That) -> (Which What)", method)
 }
 
 func requireParsedMethodEqual(t *testing.T, text string, expectedMethod model.Method) {
-	method, err := parser.ParseMethod(text)
-	require.NoError(t, err)
+	method, err := parser.ParseMethod(text, 0)
+	require.Nil(t, err)
 
 	require.Equal(t, expectedMethod.Name(), method.Name())
 	require.Equal(t, expectedMethod.Params(), method.Params())
@@ -71,8 +71,8 @@ func requireParsedMethodEqual(t *testing.T, text string, expectedMethod model.Me
 }
 
 func requireParsedEnumEqual(t *testing.T, text string, expected model.Enum) {
-	enum1, err := parser.ParseEnum(text)
-	require.NoError(t, err)
+	enum1, err := parser.ParseEnum(text, 0)
+	unit.RequireNoError(t, err)
 
 	require.Equal(t, expected.Name(), enum1.Name())
 	require.Equal(t, expected.Values(), enum1.Values())

@@ -39,16 +39,17 @@ func HandleDLMFile(logger klog.Logger, designParser parser.Parser, parsedDesigns
 		return err
 	}
 
-	namespace, _, err := ParseDLMFilePath(designPath, path)
-	if err != nil {
-		return err
+	namespace, _, err2 := ParseDLMFilePath(designPath, path)
+	if err2 != nil {
+		return err2
 	}
 
 	misc.LogMessage(logger, fmt.Sprintf("Parsing design (%s) / (%s)...", designPath, path))
 
-	design, err := designParser.Parse(path, namespace)
-	if err != nil {
-		return err
+	design, err3 := designParser.Parse(path, namespace)
+	if err3 != nil {
+		misc.LogMessage(logger, fmt.Sprintf("TODO Parse design. Parse error: [%s]", err3.Error()))
+		return err3
 	}
 	parsedDesigns.Add(design)
 
@@ -102,11 +103,11 @@ func LoadDesigns(logger klog.Logger, projectDir string, dryRun bool) (string, *D
 
 	parsedDesigns := NewDesignList()
 
-	misc.LogMessage(logger, fmt.Sprintf("Walking the path %q", designPath))
+	misc.LogMessage(logger, fmt.Sprintf("Walking the path [%q]...", designPath))
 
 	designParser := parser.NewParser()
 
-	err = filepath.Walk(designPath, func(path string, info fs.FileInfo, err error) error {
+	err2 := filepath.Walk(designPath, func(path string, info fs.FileInfo, err error) error {
 		if !strings.HasSuffix(path, ".nzsd.txt") {
 			return nil
 		}
@@ -114,8 +115,9 @@ func LoadDesigns(logger klog.Logger, projectDir string, dryRun bool) (string, *D
 		return HandleDLMFile(logger, designParser, parsedDesigns, designPath, path, info, dryRun, projectDirPath, err)
 	})
 
-	if err != nil {
-		return "", nil, fmt.Errorf("Error walking the path %q: %w", designPath, err)
+	if err2 != nil {
+		misc.LogMessage(logger, fmt.Sprintf("Walking the path. err2.error(): [%s]", err2.Error()))
+		return "", nil, fmt.Errorf("Error walking the path [%s]: Cause: [%+v]", designPath, err2)
 	}
 	return projectDirPath, parsedDesigns, nil
 }
