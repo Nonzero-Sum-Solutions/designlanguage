@@ -29,12 +29,28 @@ type spParserContext struct {
 	document                    string
 	lastLineType, containerType ParserState
 	docPrelude                  *prelude
-	currComponentLines          []string
-	components                  []model.Component
+	// TODO Is this allowed to have an empty line at the end?
+	currComponentLines []string
+	components         []model.Component
 }
 
 func (c *spParserContext) newScanner() *bufio.Scanner {
 	return bufio.NewScanner(strings.NewReader(c.document))
+}
+
+func (c *spParserContext) SetCurrComponentLines(lines []string) {
+	c.currComponentLines = lines
+}
+
+func (c *spParserContext) AppendCurrComponentLine(line string) {
+	c.currComponentLines = append(c.currComponentLines, line)
+	if strings.TrimSpace(line) == "" {
+		panic(fmt.Sprintf("TODO Unexpected empty line in component. lines: [%+v]", c.currComponentLines))
+	}
+}
+
+func (c *spParserContext) ClearCurrComponentLines() {
+	c.currComponentLines = []string{}
 }
 
 func newSPParserContext(document string) *spParserContext {
@@ -53,10 +69,10 @@ func NewSinglePassParser() Parser {
 	return &singlePassParser{}
 }
 
-func (*singlePassParser) Parse(path, namespace string) (model.Design, error) {
+func (*singlePassParser) Parse(path, namespace string) (model.Design, *ParseError) {
 	fileBytes, err := readFile(path)
 	if err != nil {
-		return nil, err
+		return nil, NewParseError("Couldn't read file", 0, 0, err)
 	}
 
 	pContext := newSPParserContext(string(fileBytes) + "\n")
@@ -70,11 +86,16 @@ func (*singlePassParser) Parse(path, namespace string) (model.Design, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("Error reading stream: %w", err)
+		return nil, NewParseError("Error reading stream", lineNum, 0, err)
 	}
 
 	if lineNum < 2 {
-		return nil, errors.New("Empty document")
+		return nil, NewParseError("Empty document", lineNum, 0, nil)
+	}
+
+	lineCount := strings.Count(pContext.document, "\n")
+	if lineNum < lineCount {
+		return nil, NewParseError(fmt.Sprintf("Too few lines in document processed. Expected at least %d", lineCount), lineNum, 0, nil)
 	}
 
 	author, docComment := "", ""
@@ -86,7 +107,7 @@ func (*singlePassParser) Parse(path, namespace string) (model.Design, error) {
 	return model.NewDesign(author, docComment, namespace, pContext.components), nil
 }
 
-func parseLine(pContext *spParserContext, line string, lineNum int) error {
+func parseLine(pContext *spParserContext, line string, lineNum int) *ParseError {
 	if pContext.lastLineType == Start {
 		if err := parseLine1(line, pContext, lineNum); err != nil {
 			return err
@@ -119,7 +140,7 @@ func parseLine(pContext *spParserContext, line string, lineNum int) error {
 	}
 
 	if pContext.containerType == Component {
-		if err := parseInComponent(line, pContext); err != nil {
+		if err := parseInComponent(line, pContext, lineNum); err != nil {
 			return err
 		}
 		return nil
@@ -132,17 +153,17 @@ func parseLine(pContext *spParserContext, line string, lineNum int) error {
 		return nil
 	}
 
-	return fmt.Errorf("%d: Unexpected state. Line: [%s], Context: %v", lineNum, line, pContext)
+	return NewParseError(fmt.Sprintf("Unexpected state. Context: %v", pContext), lineNum, 0, nil)
 }
 
-func parseAfterComponentSpace(line string, lineNum int, pContext *spParserContext) error {
+func parseAfterComponentSpace(line string, lineNum int, pContext *spParserContext) *ParseError {
 	if line == "" {
-		return fmt.Errorf("%d: Excess space. line: [%s]", lineNum, line)
+		return NewParseError(fmt.Sprintf("Excess space. line: [%s]", line), lineNum, 0, nil)
 	}
 
 	if IsComponentLine1(line) {
 		if IsEnumLine(line) {
-			enum1, err := ParseEnum(line)
+			enum1, err := ParseEnum(line, lineNum)
 			if err != nil {
 				return err
 			}
@@ -152,22 +173,23 @@ func parseAfterComponentSpace(line string, lineNum int, pContext *spParserContex
 			return nil
 		}
 
-		pContext.currComponentLines = []string{line}
+		pContext.ClearCurrComponentLines()
+		pContext.AppendCurrComponentLine(line)
 		pContext.lastLineType = ComponentLine1
 		pContext.containerType = Component
 		return nil
 	}
 
-	return fmt.Errorf("%d: parseAfterComponentSpace: Expected component line 1 but got line: [%s]", lineNum, line)
+	return NewParseError(fmt.Sprintf("Expected component line 1 but got line: [%s]", line), lineNum, 0, nil)
 }
 
-func parseInComponent(line string, pContext *spParserContext) error {
+func parseInComponent(line string, pContext *spParserContext, lineNum int) *ParseError {
 	if line != "" {
-		pContext.currComponentLines = append(pContext.currComponentLines, line)
+		pContext.AppendCurrComponentLine(line)
 		return nil
 	}
 
-	newComponent, err := parseComponent(pContext.currComponentLines)
+	newComponent, err := parseComponent(pContext.currComponentLines, lineNum)
 	if err != nil {
 		return err
 	}
@@ -175,14 +197,14 @@ func parseInComponent(line string, pContext *spParserContext) error {
 	pContext.components = append(pContext.components, newComponent)
 	pContext.containerType = Start
 	pContext.lastLineType = ComponentSpace
-	pContext.currComponentLines = []string{}
+	pContext.ClearCurrComponentLines()
 	return nil
 }
 
-func parseAfterDocCommentSpace(line string, pContext *spParserContext, lineNum int) error {
+func parseAfterDocCommentSpace(line string, pContext *spParserContext, lineNum int) *ParseError {
 	if IsComponentLine1(line) {
 		if IsEnumLine(line) {
-			enum1, err := ParseEnum(line)
+			enum1, err := ParseEnum(line, lineNum)
 			if err != nil {
 				return err
 			}
@@ -191,22 +213,23 @@ func parseAfterDocCommentSpace(line string, pContext *spParserContext, lineNum i
 			pContext.containerType = Start
 			return nil
 		}
-		pContext.currComponentLines = []string{line}
+		pContext.ClearCurrComponentLines()
+		pContext.AppendCurrComponentLine(line)
 		pContext.lastLineType = ComponentLine1
 		pContext.containerType = Component
 		return nil
 	}
 
-	return fmt.Errorf("%d: parseAfterDocCommentSpace: Expected component line 1 but got line: %s", lineNum, line)
+	return NewParseError(fmt.Sprintf("Expected component line 1 but got line: [%s]", line), lineNum, 0, nil)
 }
 
-func parseAfterDocComment(line string, pContext *spParserContext, lineNum int) error {
+func parseAfterDocComment(line string, pContext *spParserContext, lineNum int) *ParseError {
 	if line == "" {
 		pContext.lastLineType = DocCommentSpace
 		return nil
 	}
 
-	return fmt.Errorf("%d: Expected empty line but got: %s", lineNum, line)
+	return NewParseError(fmt.Sprintf("Expected empty line but got: [%s]", line), lineNum, 0, nil)
 }
 
 func parseAfterAuthor(line string, pContext *spParserContext) (shouldContinue bool) {
@@ -219,7 +242,7 @@ func parseAfterAuthor(line string, pContext *spParserContext) (shouldContinue bo
 	return false
 }
 
-func parseLine1(line string, pContext *spParserContext, lineNum int) error {
+func parseLine1(line string, pContext *spParserContext, lineNum int) *ParseError {
 	// Either this is author, line comment, or first component, or error
 	if isComment(line) {
 		if strings.HasPrefix(line, "-- Author: ") {
@@ -241,7 +264,7 @@ func parseLine1(line string, pContext *spParserContext, lineNum int) error {
 
 	if IsComponentLine1(line) {
 		if IsEnumLine(line) {
-			enum1, err := ParseEnum(line)
+			enum1, err := ParseEnum(line, lineNum)
 			if err != nil {
 				return err
 			}
@@ -250,13 +273,14 @@ func parseLine1(line string, pContext *spParserContext, lineNum int) error {
 			pContext.containerType = Start
 			return nil
 		}
-		pContext.currComponentLines = []string{line}
+		pContext.ClearCurrComponentLines()
+		pContext.AppendCurrComponentLine(line)
 		pContext.lastLineType = ComponentLine1
 		pContext.containerType = Component
 		return nil
 	}
 
-	return fmt.Errorf("%d: parseLine1: Expected component line 1 but got: [%s]", lineNum, line)
+	return NewParseError(fmt.Sprintf("Expected component line 1 but got: [%s]", line), lineNum, 0, nil)
 }
 
 func isComment(line string) bool {
@@ -285,9 +309,14 @@ func IsEnumLine(line string) bool {
 	return strings.Contains(line, " = {") && strings.HasSuffix(line, "}")
 }
 
-func parseComponent(lines []string) (model.Component, error) {
+// TODO Too complicatedd. Refactor
+func parseComponent(lines []string, lineNum int) (model.Component, *ParseError) {
 	if len(lines) < 1 {
-		return nil, errors.New("Too few lines for a component")
+		return nil, NewParseError("Too few lines for a component", lineNum, 0, nil)
+	}
+
+	if strings.TrimSpace(lines[len(lines)-1]) == "" {
+		return nil, NewParseError("Empty line not permitted at the end of the component", lineNum, 0, nil)
 	}
 
 	line1 := lines[0]
@@ -301,11 +330,15 @@ func parseComponent(lines []string) (model.Component, error) {
 
 	supertypeType, err := parseOptionalType(supertype)
 	if err != nil {
-		return nil, err
+		return nil, NewParseError("Couldn't parse supertype", lineNum, 0, err)
 	}
 
 	if len(lines) == 1 {
-		return model.NewComponent(name, "", supertypeType)
+		component, err := model.NewComponent(name, "", supertypeType)
+		if err != nil {
+			return nil, NewParseError(fmt.Sprintf("Couldn't create component: [%s]", name), lineNum, 0, err)
+		}
+		return component, nil
 	}
 
 	comment := ""
@@ -322,35 +355,55 @@ func parseComponent(lines []string) (model.Component, error) {
 		fields = append(fields, lines[2:]...)
 	}
 
-	attrs, methods, err := parseAttributesAndMethods(fields)
-	if err != nil {
-		return nil, err
+	// TODO On behalf of component. But are we including trailing blank lines?
+	attrs, methods, err2 := parseAttributesAndMethods(fields, lineNum)
+	if err2 != nil {
+		return nil, err2
 	}
 
 	if len(attrs) == 0 && len(methods) == 0 {
-		return model.NewComponent(name, comment, supertypeType)
+		component, err := model.NewComponent(name, comment, supertypeType)
+		if err != nil {
+			return nil, NewParseError(fmt.Sprintf("Couldn't create component: [%s]", name), lineNum, 0, err)
+		}
+		return component, nil
 	}
 
 	if len(methods) > 0 {
-		return model.NewObject(name, comment, supertypeType, attrs, methods)
+		object, err := model.NewObject(name, comment, supertypeType, attrs, methods)
+		if err != nil {
+			return nil, NewParseError(fmt.Sprintf("Couldn't create object: [%s]", name), lineNum, 0, err)
+		}
+		return object, nil
 	}
 
-	return model.NewEntity(name, comment, supertypeType, attrs)
+	entity, err := model.NewEntity(name, comment, supertypeType, attrs)
+	if err != nil {
+		return nil, NewParseError(fmt.Sprintf("Couldn't create entity: [%s]", name), lineNum, 0, err)
+	}
+	return entity, nil
 }
 
-func parseAttributesAndMethods(lines []string) ([]model.Attribute, []model.Method, error) {
+func parseAttributesAndMethods(lines []string, lineNum int) ([]model.Attribute, []model.Method, *ParseError) {
 	methods := []model.Method{}
 	attrs := []model.Attribute{}
 
-	for _, line := range lines {
+	if len(lines) > 0 && strings.TrimSpace(lines[len(lines)-1]) == "" {
+		return nil, nil, NewParseError("Unexpected Empty line not at the end of the component. Not sure if this is a real error or not", lineNum, 0, nil)
+	}
+
+	for i, line := range lines {
+		curLineNum := lineNum + i
 		if !strings.HasPrefix(line, "* ") {
-			return nil, nil, errors.New("Component line doesn't start with '*'.")
+			// TODO This is called inappropriately.
+			msg := fmt.Sprintf("Component line doesn't start with '*'. Line [%d] out of [%d]", i, len(lines))
+			return nil, nil, NewParseError(msg, curLineNum, 0, nil)
 		}
 
 		content := line[2:]
 
 		if strings.Contains(content, "(") {
-			method, err := ParseMethod(content)
+			method, err := ParseMethod(content, curLineNum)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -361,7 +414,7 @@ func parseAttributesAndMethods(lines []string) ([]model.Attribute, []model.Metho
 
 		attr, err := parseAttribute(content)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, NewParseError("Couldn't parse attribute", curLineNum, 0, err)
 		}
 		attrs = append(attrs, attr)
 	}
@@ -393,84 +446,96 @@ func parseAttribute(text string) (model.Attribute, error) {
 	return model.NewAttribute(name, comment, typ.Name(), typ.IsArray())
 }
 
-func ParseMethod(methodText string) (model.Method, error) {
+func ParseMethod(methodText string, lineNum int) (model.Method, *ParseError) {
 	text := strings.TrimSpace(methodText)
 	leftParensIdx1 := strings.Index(text, "(")
 	if leftParensIdx1 < 1 {
-		return nil, fmt.Errorf("Missing method left parens in text: %s", text)
+		return nil, NewParseError(fmt.Sprintf("Missing method left parens in text: [%s]", text), lineNum, 0, nil)
 	}
 
 	beforeLP := text[:leftParensIdx1]
 
 	if beforeLP[len(beforeLP)-1:] != " " {
-		return nil, fmt.Errorf("Missing expected space before params. Text: [%s]", text)
+		return nil, NewParseError(fmt.Sprintf("Missing expected space before params. Text: [%s]", text), lineNum, 0, nil)
 	}
 
 	name := beforeLP[:len(beforeLP)-1]
 
 	rightParensIdx1 := strings.Index(text, ")")
 	if rightParensIdx1 < leftParensIdx1+1 {
-		return nil, fmt.Errorf("Mismatched parens in text: %s", text)
+		return nil, NewParseError(fmt.Sprintf("Mismatched parens in text: [%s]", text), lineNum, 0, nil)
 	}
 
 	paramsText := text[leftParensIdx1+1 : rightParensIdx1]
 	params, err := parseParams(paramsText)
 
 	if rightParensIdx1 == len(text)-1 {
-		return model.NewMethod(name, "", params, []model.Param{})
+		method, err := model.NewMethod(name, "", params, []model.Param{})
+		if err != nil {
+			return nil, NewParseError(fmt.Sprintf("Couldn't create method: [%s]", name), lineNum, 0, err)
+		}
+		return method, nil
 	}
 
 	if len(text) < rightParensIdx1+3 {
-		return nil, fmt.Errorf("Missing return vals in text: %s", text)
+		return nil, NewParseError(fmt.Sprintf("Missing return vals in text: [%s]", text), lineNum, 0, nil)
 	}
 
 	afterRightParens1Exp := text[rightParensIdx1+1:]
 
 	if len(afterRightParens1Exp) < 4 || !strings.HasPrefix(afterRightParens1Exp, " -> ") {
-		return nil, fmt.Errorf("Missing arrow: %s", afterRightParens1Exp)
+		return nil, NewParseError(fmt.Sprintf("Missing arrow: [%s]", afterRightParens1Exp), lineNum, 0, nil)
 	}
 
 	afterArrowExp := afterRightParens1Exp[4:]
 	afterNameTokens := strings.Split(afterArrowExp, " -- ")
 
 	if len(afterNameTokens) < 1 {
-		return nil, fmt.Errorf("Missing return expression in expression: %s", afterRightParens1Exp)
+		return nil, NewParseError(fmt.Sprintf("Missing return expression in expression: [%s]", afterRightParens1Exp), lineNum, 0, nil)
 	}
 	returnExp := afterNameTokens[0]
 	comment := ""
 	if len(afterNameTokens) == 1 {
 		// No comment
 	} else if len(afterNameTokens) > 2 {
-		return nil, fmt.Errorf("Malformed return expression: %s", afterRightParens1Exp)
+		return nil, NewParseError(fmt.Sprintf("Malformed return expression: [%s]", afterRightParens1Exp), lineNum, 0, nil)
 	} else {
 		comment = afterNameTokens[1]
 	}
 
 	returnVals, err := parseParams(returnExp)
 	if err != nil {
-		return nil, err
+		return nil, NewParseError("Couldn't parse return values", lineNum, 0, err)
 	}
 
-	return model.NewMethod(name, comment, params, returnVals)
+	method, err := model.NewMethod(name, comment, params, returnVals)
+	if err != nil {
+		return nil, NewParseError(fmt.Sprintf("Couldn't create method: [%s]", name), lineNum, 0, err)
+	}
+	return method, nil
 }
 
 // TODO Need to use this somewhere
-func ParseEnum(text string) (model.Enum, error) {
+func ParseEnum(text string, lineNum int) (model.Enum, *ParseError) {
 	if !strings.Contains(text, " = {") {
-		return nil, fmt.Errorf("No enum match: %s", text)
+		return nil, NewParseError(fmt.Sprintf("No enum match: [%s]", text), lineNum, 0, nil)
 	}
 
 	tokens := strings.Split(text, " = {")
 
 	if len(tokens) != 2 {
-		return nil, fmt.Errorf("Too few tokens: %s", text)
+		return nil, NewParseError(fmt.Sprintf("Too few tokens: [%s]", text), lineNum, 0, nil)
 	}
 
 	name := tokens[0]
 
 	values := strings.Split(tokens[1][:len(tokens[1])-1], ", ")
 
-	return model.NewEnum(name, values...)
+	enum, err := model.NewEnum(name, values...)
+	if err != nil {
+		return nil, NewParseError(fmt.Sprintf("Couldn't create enum: [%s]", text), lineNum, 0, err)
+	}
+	return enum, nil
 }
 
 // Input may either be in one of the following forms.

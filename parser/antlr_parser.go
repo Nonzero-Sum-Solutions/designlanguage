@@ -15,10 +15,10 @@ func NewANTLRParser() Parser {
 	return &antlrParser{}
 }
 
-func (*antlrParser) Parse(path, namespace string) (model.Design, error) {
+func (*antlrParser) Parse(path, namespace string) (model.Design, *ParseError) {
 	fileBytes, err := readFile(path)
 	if err != nil {
-		return nil, err
+		return nil, NewParseError("Couldn't read file", 0, 0, err)
 	}
 	lexer := p.NewDesignLanguageLexer(antlr.NewInputStream(string(fileBytes)))
 	parser := p.NewDesignLanguageParser(antlr.NewCommonTokenStream(lexer, 0))
@@ -45,7 +45,7 @@ func (*antlrParser) Parse(path, namespace string) (model.Design, error) {
 		// TODO This is now wrong.
 		objects, components, entities, err = addComponentANTLR(cc, objects, components, entities)
 		if err != nil {
-			return nil, err
+			return nil, NewParseError("Couldn't add component", 0, 0, err)
 		}
 	}
 

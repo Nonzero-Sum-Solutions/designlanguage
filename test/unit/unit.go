@@ -9,13 +9,13 @@ import (
 
 func newIntType(t *testing.T) model.Type {
 	typ, err := model.NewType("Int", false)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return typ
 }
 
 func NewPlane(t *testing.T) model.Component {
 	p, err := model.NewComponent("Plane", "", nil)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return p
 }
 
@@ -24,13 +24,13 @@ func NewRectangle(t *testing.T) model.Entity {
 		"Rectangle", "", nil,
 		[]model.Attribute{NewAttr(t, "Length", "", "int", false), NewAttr(t, "Width", "", "int", false)},
 	)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return rectangle
 }
 
 func NewAttr(t *testing.T, name, comment, typeName string, isArray bool) model.Attribute {
 	a, err := model.NewAttribute(name, comment, typeName, isArray)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return a
 }
 
@@ -38,13 +38,13 @@ func NewSquare(t *testing.T) model.Entity {
 	square, err := model.NewEntity(
 		"Square", "", NewType(t, "Rectangle"), []model.Attribute{NewAttr(t, "Area", "", "int", false)},
 	)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return square
 }
 
 func NewType(t *testing.T, name string) model.Type {
 	typ, err := model.NewType(name, false)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return typ
 }
 
@@ -53,7 +53,7 @@ func NewLabelledValue(t *testing.T) model.Entity {
 		"LabelledValue", "", nil,
 		[]model.Attribute{NewAttr(t, "Label", "", "String", false), NewAttr(t, "Value", "", "Int", false)},
 	)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return labelledValue
 }
 
@@ -61,12 +61,12 @@ func NewPersonRepo(t *testing.T) model.Object {
 	addMethod, err := model.NewMethod(
 		"Add", "", []model.Param{model.NewParam("Person", NewType(t, "Person"))}, []model.Param{},
 	)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	getMethod, err := model.NewMethod("Get", "",
 		[]model.Param{model.NewParam("name", NewType(t, "String"))},
 		[]model.Param{model.NewParam("person", NewType(t, "Person"))})
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	personRepo, err := model.NewObject(
 		"PersonRepository", "", nil, []model.Attribute{},
@@ -74,7 +74,7 @@ func NewPersonRepo(t *testing.T) model.Object {
 			addMethod,
 			getMethod,
 		})
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return personRepo
 }
 
@@ -82,13 +82,13 @@ func NewSpinner(t *testing.T) model.Object {
 	method, err := model.NewMethod("Spin", "",
 		[]model.Param{model.NewParam("velocity", newIntType(t)), model.NewParam("duration", newIntType(t))},
 		[]model.Param{})
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	o, err := model.NewObject(
 		"Spinner", "", nil, []model.Attribute{NewAttr(t, "Radius", "", "int", false)},
 		[]model.Method{method},
 	)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	return o
 }
@@ -97,20 +97,20 @@ func NewSpinningSquare(t *testing.T) model.Object {
 	method, err := model.NewMethod("Spin", "",
 		[]model.Param{model.NewParam("Velocity", newIntType(t)), model.NewParam("Duration", newIntType(t))},
 		[]model.Param{})
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	o, err := model.NewObject(
 		"SpinningSquare", "", NewType(t, "Square"), []model.Attribute{},
 		[]model.Method{method},
 	)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	return o
 }
 
 func NewColorEnum(t *testing.T) model.Enum {
 	e, err := model.NewEnum("Color", "Red", "Green", "Blue")
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	return e
 }
 
@@ -121,15 +121,15 @@ func NewAppkitDesign(t *testing.T) model.Design {
 		NewAttr(t, "ConfigName", "", "String", false),
 	}
 	app, err := model.NewEntity("App", "A software application.", nil, appAttrs)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	exeMethod, err := model.NewMethod("Execute", "", []model.Param{}, []model.Param{})
-	require.NoError(t, err)
+	RequireNoError(t, err)
 	cmdMethods := []model.Method{
 		exeMethod,
 	}
 	command, err := model.NewObject("Command", "", nil, []model.Attribute{}, cmdMethods)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	cliAttributes := []model.Attribute{
 		NewAttr(t, "AppID", "", "String", false),
@@ -142,23 +142,23 @@ func NewAppkitDesign(t *testing.T) model.Design {
 		model.NewParam("Err", NewType(t, "Error")),
 	}
 	nrMethod, err := model.NewMethod("NewRootCommand", "", []model.Param{}, nrReturnVals)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	slMethod, err := model.NewMethod("SetLogger", "", []model.Param{model.NewParam("Logger", NewType(t, "Logger"))}, []model.Param{})
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	cliMethods := []model.Method{nrMethod, slMethod}
 	cli, err := model.NewObject("CLI", "Command Line Interface.", NewType(t, "Command"), cliAttributes, cliMethods)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	newMethod, err := model.NewMethod("New", "", []model.Param{}, []model.Param{model.NewParam("Cmd", NewType(t, "Command"))})
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	commandFactory, err := model.NewObject(
 		"CommandFactory", "", nil, []model.Attribute{},
 		[]model.Method{newMethod},
 	)
-	require.NoError(t, err)
+	RequireNoError(t, err)
 
 	design := model.NewDesign(
 		"Nonzero Sum", "Appkit is an application development kit, part of the Nonzero Sum Stack.",
@@ -166,4 +166,9 @@ func NewAppkitDesign(t *testing.T) model.Design {
 		[]model.Component{app, command, cli, commandFactory},
 	)
 	return design
+}
+
+// TODO This version permits for custom errors. Move to appkit
+func RequireNoError(t *testing.T, err error, args ...interface{}) {
+	require.Nil(t, err, "Expected nil but was error: [%s]", err, args)
 }

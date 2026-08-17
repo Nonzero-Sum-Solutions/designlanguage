@@ -25,7 +25,7 @@ func TestRenderPyEmptyComponent(t *testing.T) {
 	plane := unit.NewPlane(t)
 	src, err := genpy.RenderComponentPySource(plane)
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -42,7 +42,7 @@ func TestRenderPyEntity(t *testing.T) {
 	rectangle := unit.NewRectangle(t)
 	src, err := genpy.RenderEntityPySource(rectangle)
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 
 }
@@ -61,7 +61,7 @@ func TestTypePyAlias(t *testing.T) {
 	labelledValue := unit.NewLabelledValue(t)
 	src, err := genpy.RenderEntityPySource(labelledValue)
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -77,14 +77,14 @@ func TestRenderPyObject(t *testing.T) {
 
 	src, err := genpy.RenderObjectPySource(unit.NewSpinner(t))
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
 func TestNewMethodDef(t *testing.T) {
 	method1 := unit.NewSpinner(t).Methods()[0]
 	methodDef, err := pytranslator.NewMethodDef(method1)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 
 	require.Equal(t, "spin", methodDef.Name().Value())
 	args := methodDef.Args().Args()
@@ -103,7 +103,7 @@ func TestNewMethodDef(t *testing.T) {
 	require.Equal(t, n.Id().Value(), "int")
 
 	text, err := pywriter.RenderArguments(methodDef.Args(), "")
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 
 	require.Equal(t, "(velocity: int, duration: int)", text)
 }
@@ -120,7 +120,7 @@ func TestPyRenderPersonRepository(t *testing.T) {
 
 	src, err := genpy.RenderObjectPySource(unit.NewPersonRepo(t))
 
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -153,7 +153,7 @@ class Spinner(Protocol):
 	design := model.NewDesign("", "", "geometry", []model.Component{plane, rectangle, spinner})
 
 	src, err := genpy.RenderDesignPySource(design)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -186,7 +186,7 @@ class SpinningSquare(Square):
 	design := model.NewDesign("", "", "shapes", []model.Component{plane, rectangle, square, spinningSquare})
 
 	src, err := genpy.RenderDesignPySource(design)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
 
@@ -241,6 +241,6 @@ class CommandFactory(Protocol):
 	design := unit.NewAppkitDesign(t)
 
 	src, err := genpy.RenderDesignPySource(design)
-	require.NoError(t, err)
+	unit.RequireNoError(t, err)
 	require.Equal(t, expectedSource, src)
 }
